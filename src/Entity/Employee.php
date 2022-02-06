@@ -69,6 +69,11 @@ class Employee
      */
     private ?UnionContribution $unionContribution;
 
+    /**
+     * @ORM\OneToOne(targetEntity=PayCheck::class, mappedBy="employee", cascade={"persist", "remove"})
+     */
+    private $payCheck;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -195,6 +200,23 @@ class Employee
         }
 
         $this->unionContribution = $unionContribution;
+
+        return $this;
+    }
+
+    public function getPayCheck(): ?PayCheck
+    {
+        return $this->payCheck;
+    }
+
+    public function setPayCheck(PayCheck $payCheck): self
+    {
+        // set the owning side of the relation if necessary
+        if ($payCheck->getEmployee() !== $this) {
+            $payCheck->setEmployee($this);
+        }
+
+        $this->payCheck = $payCheck;
 
         return $this;
     }
