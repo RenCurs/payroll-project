@@ -25,6 +25,13 @@ class FixedSalaryCalculate implements PaymentCalculate
 
     private function subUnionContribution(float &$salary): void
     {
+        if ($this->employee->getIsUnionAffiliation()) {
+            $contribution = $this->employee->getUnionContribution();
+
+            if (null !== $contribution) {
+                $salary-= $contribution->getSum();
+            }
+        }
     }
 
     private function subUnionServiceCharge(float &$salary): void

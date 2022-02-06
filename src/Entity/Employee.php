@@ -45,17 +45,17 @@ class Employee
     private string $paymentSchedule;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     private ?float $salary;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     private ?float $hourTariff;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     private ?float $commissionRate;
 
@@ -63,6 +63,11 @@ class Employee
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private bool $isUnionAffiliation;
+
+    /**
+     * @ORM\OneToOne(targetEntity=UnionContribution::class, mappedBy="employee", cascade={"persist", "remove"})
+     */
+    private ?UnionContribution $unionContribution;
 
     public function getId(): ?int
     {
@@ -173,6 +178,23 @@ class Employee
     public function setCommissionRate(float $commissionRate): self
     {
         $this->commissionRate = $commissionRate;
+
+        return $this;
+    }
+
+    public function getUnionContribution(): ?UnionContribution
+    {
+        return $this->unionContribution;
+    }
+
+    public function setUnionContribution(UnionContribution $unionContribution): self
+    {
+        // set the owning side of the relation if necessary
+        if ($unionContribution->getEmployee() !== $this) {
+            $unionContribution->setEmployee($this);
+        }
+
+        $this->unionContribution = $unionContribution;
 
         return $this;
     }

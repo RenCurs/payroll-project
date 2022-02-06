@@ -7,6 +7,10 @@ use DateTime;
 
 class MonthlyPaymentSchedule implements PaymentSchedule
 {
+    /**
+     * Для месячного графика оплаты, проверяем, что текущий день - последний день месяца,
+     * иначе не выплачиваем.
+     */
     public function isPayDate(DateTime $date): bool
     {
         $lastDay = (new DateTime())->format('t');
