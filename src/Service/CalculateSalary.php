@@ -32,7 +32,8 @@ class CalculateSalary
             if ($paymentSchedule->isPayDate($date)) {
                 $paymentCalculate = $this->calculateFactory->create($employee);
                 $paymentEmployee = $paymentCalculate->calculate();
-                dump($paymentEmployee);
+                $message = 'Оплата работника с id: ' . $employee->getId() . ' = ' . $paymentEmployee;
+                dump($message);
             }
         }
     }
