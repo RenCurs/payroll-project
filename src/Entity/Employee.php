@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\EmployeeRepository;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -73,6 +75,22 @@ class Employee
      * @ORM\OneToOne(targetEntity=PayCheck::class, mappedBy="employee", cascade={"persist", "remove"})
      */
     private $payCheck;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ServicesCharge::class, mappedBy="employee")
+     */
+    private $servicesCharges;
+
+    /**
+     * @ORM\OneToMany(targetEntity=TimeCard::class, mappedBy="employeeId", orphanRemoval=true)
+     */
+    private $timeCards;
+
+    public function __construct()
+    {
+        $this->servicesCharges = new ArrayCollection();
+        $this->timeCards = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -217,6 +235,66 @@ class Employee
         }
 
         $this->payCheck = $payCheck;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ServicesCharge[]
+     */
+    public function getServicesCharges(): Collection
+    {
+        return $this->servicesCharges;
+    }
+
+    public function addServicesCharge(ServicesCharge $servicesCharge): self
+    {
+        if (!$this->servicesCharges->contains($servicesCharge)) {
+            $this->servicesCharges[] = $servicesCharge;
+            $servicesCharge->setEmployee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServicesCharge(ServicesCharge $servicesCharge): self
+    {
+        if ($this->servicesCharges->removeElement($servicesCharge)) {
+            // set the owning side to null (unless already changed)
+            if ($servicesCharge->getEmployee() === $this) {
+                $servicesCharge->setEmployee(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TimeCard[]
+     */
+    public function getTimeCards(): Collection
+    {
+        return $this->timeCards;
+    }
+
+    public function addTimeCard(TimeCard $timeCard): self
+    {
+        if (!$this->timeCards->contains($timeCard)) {
+            $this->timeCards[] = $timeCard;
+            $timeCard->setEmployeeId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTimeCard(TimeCard $timeCard): self
+    {
+        if ($this->timeCards->removeElement($timeCard)) {
+            // set the owning side to null (unless already changed)
+            if ($timeCard->getEmployeeId() === $this) {
+                $timeCard->setEmployeeId(null);
+            }
+        }
 
         return $this;
     }

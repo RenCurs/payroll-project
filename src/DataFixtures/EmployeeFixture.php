@@ -11,6 +11,7 @@ use Doctrine\Persistence\ObjectManager;
 class EmployeeFixture extends Fixture
 {
     public const TEST_USER = 'test_user';
+    public const EMP_HOURLY = 'emp_hourly';
 
     public function load(ObjectManager $manager): void
     {
@@ -31,10 +32,12 @@ class EmployeeFixture extends Fixture
             ->setFio('Иванов Иван Петрович')
             ->setAddress('г. Ростов-на-Дону, ул. Ленина, д.45')
             ->setDateBirth(new \DateTime('2000-01-01'))
-            ->setPaymentSchedule(PaymentScheduleEnum::MONTHLY)
-            ->setSalary(12000)
-            ->setSalaryType(PaymentTypeEnum::FIXED)
+            ->setPaymentSchedule(PaymentScheduleEnum::WEEKLY)
+            ->setHourTariff(300)
+            ->setSalaryType(PaymentTypeEnum::HOURLY)
             ->setIsUnionAffiliation(false);
+
+        $this->addReference(self::EMP_HOURLY, $anotherUser);
 
         $manager->persist($user);
         $manager->persist($anotherUser);

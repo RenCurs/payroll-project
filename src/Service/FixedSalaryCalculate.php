@@ -36,5 +36,10 @@ class FixedSalaryCalculate implements PaymentCalculate
 
     private function subUnionServiceCharge(float &$salary): void
     {
+        $services = $this->employee->getServicesCharges();
+
+        foreach ($services as $service) {
+            $salary-= $service->getCost();
+        }
     }
 }
