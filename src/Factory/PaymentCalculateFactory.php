@@ -2,9 +2,10 @@
 
 namespace App\Factory;
 
-use App\Enum\PaymentTypeEnum;
 use App\Entity\Employee;
-use App\Service\FixedSalaryCalculate;
+use App\Enum\PaymentTypeEnum;
+use App\Service\Calculate\FixedSalaryCalculate;
+use App\Service\Calculate\HourlySalaryCalculate;
 use InvalidArgumentException;
 
 class PaymentCalculateFactory
@@ -17,7 +18,7 @@ class PaymentCalculateFactory
 
                 break;
             case PaymentTypeEnum::HOURLY:
-                $calculate = 2;
+                $calculate = new HourlySalaryCalculate($employee);
 
                 break;
             case PaymentTypeEnum::JOB_PRICE:

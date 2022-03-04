@@ -1,29 +1,20 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Calculate;
 
 use App\Entity\Employee;
-use App\Factory\PaymentCalculate;
 
-class FixedSalaryCalculate implements PaymentCalculate
+// todo Или убрать абстракцию, сделать либо хелпер для этого либо сервис ???
+class AbstractCalculate
 {
-    private Employee $employee;
+    protected Employee $employee;
 
     public function __construct(Employee $employee)
     {
         $this->employee = $employee;
     }
 
-    public function calculate(): float
-    {
-        $salary = $this->employee->getSalary();
-        $this->subUnionContribution($salary);
-        $this->subUnionServiceCharge($salary);
-
-        return $salary;
-    }
-
-    private function subUnionContribution(float &$salary): void
+    protected function subUnionContribution(float &$salary): void
     {
         if ($this->employee->getIsUnionAffiliation()) {
             $contribution = $this->employee->getUnionContribution();
@@ -34,7 +25,7 @@ class FixedSalaryCalculate implements PaymentCalculate
         }
     }
 
-    private function subUnionServiceCharge(float &$salary): void
+    protected function subUnionServiceCharge(float &$salary): void
     {
         $services = $this->employee->getServicesCharges();
 

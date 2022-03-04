@@ -82,7 +82,7 @@ class Employee
     private $servicesCharges;
 
     /**
-     * @ORM\OneToMany(targetEntity=TimeCard::class, mappedBy="employeeId", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=TimeCard::class, mappedBy="employee", orphanRemoval=true)
      */
     private $timeCards;
 
@@ -281,7 +281,7 @@ class Employee
     {
         if (!$this->timeCards->contains($timeCard)) {
             $this->timeCards[] = $timeCard;
-            $timeCard->setEmployeeId($this);
+            $timeCard->setEmployee($this);
         }
 
         return $this;
@@ -289,11 +289,9 @@ class Employee
 
     public function removeTimeCard(TimeCard $timeCard): self
     {
-        if ($this->timeCards->removeElement($timeCard)) {
-            // set the owning side to null (unless already changed)
-            if ($timeCard->getEmployeeId() === $this) {
-                $timeCard->setEmployeeId(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->timeCards->removeElement($timeCard) && $timeCard->getEmployee() === $this) {
+            $timeCard->setEmployee(null);
         }
 
         return $this;
