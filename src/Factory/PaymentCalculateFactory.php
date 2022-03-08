@@ -3,14 +3,25 @@
 namespace App\Factory;
 
 use App\Entity\Employee;
+use App\Entity\TimeCard;
 use App\Enum\PaymentTypeEnum;
+use App\Repository\EmployeeRepository;
+use App\Repository\TimeCardRepository;
 use App\Service\Calculate\FixedSalaryCalculate;
 use App\Service\Calculate\HourlySalaryCalculate;
+use DateTime;
 use InvalidArgumentException;
 
 class PaymentCalculateFactory
 {
-    public function create(Employee $employee): PaymentCalculate
+    private TimeCardRepository $timeCardRepository;
+
+    public function __construct(TimeCardRepository $timeCardRepository)
+    {
+        $this->timeCardRepository = $timeCardRepository;
+    }
+
+    public function create(DateTime $dateTime, Employee $employee): PaymentCalculate
     {
         switch ($employee->getSalaryType()) {
             case PaymentTypeEnum::FIXED:
@@ -18,7 +29,7 @@ class PaymentCalculateFactory
 
                 break;
             case PaymentTypeEnum::HOURLY:
-                $calculate = new HourlySalaryCalculate($employee);
+                $calculate = new HourlySalaryCalculate($dateTime, $employee, $this->timeCardRepository);
 
                 break;
             case PaymentTypeEnum::JOB_PRICE:

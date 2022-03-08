@@ -6,7 +6,7 @@ use App\Factory\PaymentCalculate;
 
 class FixedSalaryCalculate extends AbstractCalculate implements PaymentCalculate
 {
-    public function calculate(): float
+    public function calculateSalary(): float
     {
         $salary = $this->employee->getSalary();
         $this->subUnionContribution($salary);

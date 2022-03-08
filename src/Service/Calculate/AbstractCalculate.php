@@ -4,14 +4,24 @@ namespace App\Service\Calculate;
 
 use App\Entity\Employee;
 
-// todo Или убрать абстракцию, сделать либо хелпер для этого либо сервис ???
-class AbstractCalculate
+abstract class AbstractCalculate
 {
     protected Employee $employee;
 
     public function __construct(Employee $employee)
     {
         $this->employee = $employee;
+    }
+
+    abstract protected function calculateSalary(): float;
+
+    public function calculate(): float
+    {
+        $salary = $this->calculateSalary();
+        $this->subUnionContribution($salary);
+        $this->subUnionServiceCharge($salary);
+
+        return $salary;
     }
 
     protected function subUnionContribution(float &$salary): void

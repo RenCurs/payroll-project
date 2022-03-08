@@ -2,72 +2,146 @@
 
 namespace App\Service\Calculate;
 
+use App\Component\TimeSpentDto;
+use App\Entity\Employee;
 use App\Entity\TimeCard;
+use App\Enum\TimeTypeEnum;
+use App\Exception\NotFullyWorkingHours;
 use App\Factory\PaymentCalculate;
+use App\Repository\TimeCardRepository;
+use DateTime;
 
 class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculate
 {
     private const NORMAL = 8;
+    private const OVER_TIME_MULTIPLE_RATE = 2;
 
-    public function calculate(): float
+    private DateTime $payDate;
+    private TimeCardRepository $timeCardRepository;
+
+    public function __construct(DateTime $payDate, Employee $employee, TimeCardRepository $timeCardRepository)
     {
-        $salary = $this->calculateSalary();
-        $this->subUnionContribution($salary);
-        $this->subUnionServiceCharge($salary);
+        parent::__construct($employee);
 
-        return $salary;
+        $this->payDate = $payDate;
+        $this->employee = $employee;
+        $this->timeCardRepository = $timeCardRepository;
     }
 
-    private function calculateSalary(): float {
-        $currentSpent = 0;
-        $upTimeSpent = 0;
+    protected function calculateSalary(): float {
 
-        $tariffRate = $this->employee->getHourTariff();
+        $spentTimes = $this->constructTimeSpent($this->timeCardRepository->getTimeCardsForWeek($this->payDate));
+        $totalPrimarySalary = $totalOverTimeSalary = 0;
 
-        $timeCards = $this->reindexByDate($this->employee->getTimeCards()->toArray());
+        /** @var TimeSpentDto $timeSpentDto */
+        foreach ($spentTimes as $timeSpentDto) {
+            $primarySalary = $this->calculatePrimaryTime($timeSpentDto);
+            $overTimeSalary = $this->calculateOverTime($timeSpentDto);
 
-        // todo Упростить расчет, разбить на разные методы. Сама подсчет вроде верный
-        foreach ($timeCards as $spentHours) {
-            $currentSpentDay = 0;
-            $upTimeSpentDay = 0;
+            try {
+                $this->validatePrimarySpentTime($timeSpentDto);
+            } catch (NotFullyWorkingHours $exception) {
+                // todo log
+                $primarySalary = $this->calculatePrimaryTimeByOverTime($timeSpentDto);
+                $overTimeSalary = $this->calculateOverTime($timeSpentDto);
+            }
 
-            foreach ($spentHours as $hour) {
-                if ($currentSpentDay < self::NORMAL) {
-                    $currentSpentDay = +$hour;
-                }
+            $totalOverTimeSalary += $primarySalary;
+            $totalOverTimeSalary += $overTimeSalary;
+        }
 
-                if ($currentSpentDay >= self::NORMAL) {
-                    $upTimeSpentDay += $hour;
-                }
+        return $totalPrimarySalary  + $totalOverTimeSalary;
+    }
 
-                $currentSpent = $currentSpentDay;
-                $upTimeSpent = $upTimeSpentDay;
+    private function calculatePrimaryTime(TimeSpentDto $dto): float
+    {
+        $primaryTime = array_sum($dto->primaryTime);
+
+        // todo Пока неясно, а нужно ли вообще такое вводить?
+        // todo А если работника перевыполнил норму рабочего времени, но ничего не указано в дополнительном.
+        // Например, 2 записи по 6 часов с основным типом времени
+        if (self::NORMAL < $primaryTime) {
+            $diff = $primaryTime - self::NORMAL;
+            $primaryTime = self::NORMAL;
+            $dto->overTime[] = $diff;
+        }
+
+
+        return $primaryTime * $this->employee->getHourTariff();
+    }
+
+    private function calculateOverTime(TimeSpentDto $dto): float
+    {
+        return array_sum($dto->overTime) * $this->employee->getHourTariff() * self::OVER_TIME_MULTIPLE_RATE;
+    }
+
+    private function calculatePrimaryTimeByOverTime(TimeSpentDto $dto): float
+    {
+        // Рабочий невыполнил норму рабочего времени, но указал что-то в дополнительном
+        // Сейчас, если за день не отработал 8 часов, то текущее значение трат основного времени дополняется времени неурочным
+        // Позже подумать, как быть в таких ситуациях ?
+        $primaryTime =  array_sum($dto->primaryTime);
+
+        foreach ($dto->overTime as $index => $overTime) {
+            $primaryTime += $overTime;
+
+            if ( self::NORMAL < $primaryTime) {
+                $diff = $primaryTime - self::NORMAL;
+                $primaryTime = self::NORMAL;
+                $dto->overTime[] = $diff;
+
+                unset($dto->overTime[$index]);
+                break;
             }
         }
 
-        $primarySalary = $currentSpent * $tariffRate;
-        $upSalary = $upTimeSpent * 2 * $tariffRate;
+        if (self::NORMAL > $primaryTime) {
+            $dto->overTime = [];
+        }
 
-        return $primarySalary + $upSalary;
+        return $primaryTime * $this->employee->getHourTariff();
     }
 
     /**
      * Формирует массив потраченного времени по дате, где дата является ключом
-     * Пример: [
-     *              '2022-01-01 => [4, 5, 2],
-     *              '2022-01-02 => [8]
-     *         ]
+     *
      * @param TimeCard[] $timeCards
+     *
+     * @return array<string, TimeSpentDto>
      */
-    private function reindexByDate(array $timeCards): array
+    private function constructTimeSpent(array $timeCards): array
     {
         $result = [];
 
         foreach($timeCards as $card) {
             $dateString = ($card->getDate())->format('Y-m-d');
-            $result[$dateString][] = $card->getSpentHour();
+
+            if (false === array_key_exists($dateString, $result)) {
+                $dto = new TimeSpentDto();
+                $dto->date = $card->getDate();
+                $result[$dateString] = $dto;
+            }
+
+            if (TimeTypeEnum::PRIMARY === $card->getTypeTime()) {
+                $result[$dateString]->primaryTime[] = ($card->getSpentHour());
+            } else {
+                $result[$dateString]->overTime[] = $card->getSpentHour();
+            }
         }
 
         return $result;
+    }
+
+    /**
+     * @throws NotFullyWorkingHours
+     */
+    private function validatePrimarySpentTime(TimeSpentDto $dto): void
+    {
+        // todo Опять же, как быть в ситуация, когда работник за день не выполнил норму, но работал в неурочное время ?
+        $primaryTime = array_sum($dto->primaryTime);
+
+        if (self::NORMAL > $primaryTime && !empty($dto->overTime)) {
+            throw new NotFullyWorkingHours('Работник не отработал норму, но работал в неурочное время');
+        }
     }
 }

@@ -34,6 +34,11 @@ class TimeCard
      */
     private int $spentHour;
 
+    /**
+     * @ORM\Column(type="string", nullable="false")
+     */
+    private string $typeTime;
+
     public function getId(): ?int
     {
         return $this->id ?? null;
@@ -71,6 +76,18 @@ class TimeCard
     public function setSpentHour(int $spentHour): TimeCard
     {
         $this->spentHour = $spentHour;
+
+        return $this;
+    }
+
+    public function getTypeTime(): string
+    {
+        return $this->typeTime;
+    }
+
+    public function setTypeTime(string $typeTime): TimeCard
+    {
+        $this->typeTime = $typeTime;
 
         return $this;
     }

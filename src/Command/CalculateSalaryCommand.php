@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Service\CalculateSalary;
 use DateTime;
+use DateTimeZone;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -38,7 +39,7 @@ class CalculateSalaryCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dateOption = $input->getOption('pay-date');
-        $date = DateTime::createFromFormat('Y-m-d', $dateOption);
+        $date = DateTime::createFromFormat('Y-m-d', $dateOption, new DateTimeZone('Europe/Moscow'));
 
         if (false === $date) {
             $output->writeln('<error>Incorrect date of payment</error>');

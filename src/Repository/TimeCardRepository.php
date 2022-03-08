@@ -3,8 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\TimeCard;
+use DateInterval;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
+use InvalidArgumentException;
 
 /**
  * @method TimeCard|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +24,27 @@ class TimeCardRepository extends ServiceEntityRepository
         parent::__construct($registry, TimeCard::class);
     }
 
-    // /**
-    //  * @return TimeCard[] Returns an array of TimeCard objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return TimeCard[]
+     */
+    public function getTimeCardsForWeek(DateTime $currentDate): array
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $friday = clone $currentDate;
+        $monday = $currentDate->sub(new DateInterval('P4D'));
 
-    /*
-    public function findOneBySomeField($value): ?TimeCard
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ('Mon' !== $monday->format('D')) {
+            throw new InvalidArgumentException('Incorrect date for weekly search, current day must be friday!');
+        }
+
+        $qb = $this->createQueryBuilder('tc');
+
+        $qb->where($qb->expr()->between('tc.date', ':monday', ':friday'))
+            ->setParameters(new ArrayCollection([
+                    new Parameter('monday', $monday->format('Y-m-d')),
+                    new Parameter('friday', $friday),
+                ]
+            ));
+
+        return $qb->getQuery()->getResult();
     }
-    */
 }

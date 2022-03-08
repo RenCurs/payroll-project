@@ -30,8 +30,10 @@ class CalculateSalary
 
         foreach ($employees as $employee) {
             $paymentSchedule = $this->scheduleFactory->create($employee);
-            if ($paymentSchedule->isPayDate($date)) {
-                $paymentCalculate = $this->calculateFactory->create($employee);
+            $payDate = clone $date;
+
+            if ($paymentSchedule->isPayDate($payDate)) {
+                $paymentCalculate = $this->calculateFactory->create($payDate, $employee);
                 $paymentEmployee = $paymentCalculate->calculate();
 
                 // todo Сделать создание чека с данным об услугах, взносах и итоговой зп
