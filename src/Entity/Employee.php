@@ -34,7 +34,7 @@ class Employee
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $dateBirth;
+    private DateTime $dateBirth;
 
     /**
      * @ORM\Column(type="string", length=50)
@@ -86,10 +86,21 @@ class Employee
      */
     private $timeCards;
 
+    /**
+     * @ORM\OneToMany(targetEntity=SaleReceipt::class, mappedBy="employee", orphanRemoval=true)
+     */
+    private $saleReceipts;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private DateTime $lastPayDate;
+
     public function __construct()
     {
         $this->servicesCharges = new ArrayCollection();
         $this->timeCards = new ArrayCollection();
+        $this->saleReceipts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -293,6 +304,48 @@ class Employee
         if ($this->timeCards->removeElement($timeCard) && $timeCard->getEmployee() === $this) {
             $timeCard->setEmployee(null);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SaleReceipt[]
+     */
+    public function getSaleReceipts(): Collection
+    {
+        return $this->saleReceipts;
+    }
+
+    public function addSaleReceipt(SaleReceipt $saleReceipt): self
+    {
+        if (!$this->saleReceipts->contains($saleReceipt)) {
+            $this->saleReceipts[] = $saleReceipt;
+            $saleReceipt->setEmployee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSaleReceipt(SaleReceipt $saleReceipt): self
+    {
+        if ($this->saleReceipts->removeElement($saleReceipt)) {
+            // set the owning side to null (unless already changed)
+            if ($saleReceipt->getEmployee() === $this) {
+                $saleReceipt->setEmployee(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLastPayDate(): ?DateTime
+    {
+        return $this->lastPayDate;
+    }
+
+    public function setLastPayDate(DateTime $lastPayDate): self
+    {
+        $this->lastPayDate = $lastPayDate;
 
         return $this;
     }

@@ -37,8 +37,6 @@ class CalculateSalary
                 $paymentEmployee = $paymentCalculate->calculate();
 
                 // todo Сделать создание чека с данным об услугах, взносах и итоговой зп
-                $message = 'Оплата работника с id: ' . $employee->getId() . ' = ' . $paymentEmployee;
-                dump($message);
             }
         }
     }

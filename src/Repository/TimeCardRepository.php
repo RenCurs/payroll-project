@@ -40,7 +40,7 @@ class TimeCardRepository extends ServiceEntityRepository
 
         $qb->where($qb->expr()->between('tc.date', ':monday', ':friday'))
             ->setParameters(new ArrayCollection([
-                    new Parameter('monday', $monday->format('Y-m-d')),
+                    new Parameter('monday', $monday),
                     new Parameter('friday', $friday),
                 ]
             ));
