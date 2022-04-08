@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\UnionContribution;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method UnionContribution|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +23,26 @@ class UnionContributionRepository extends ServiceEntityRepository
         parent::__construct($registry, UnionContribution::class);
     }
 
-    // /**
-    //  * @return UnionContribution[] Returns an array of UnionContribution objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return UnionContribution[]
+     */
+    public function getByPeriod(DateTime $start, DateTime $end): array
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('uc');
 
-    /*
-    public function findOneBySomeField($value): ?UnionContribution
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
+        return $qb->andWhere(
+            $qb->expr()->gte('uc.dateStart', ':start'),
+            $qb->expr()->lte('uc.dateEnd', ':end')
+        )
+            ->setParameters(
+                new ArrayCollection(
+                    [
+                        new Parameter('start', $start),
+                        new Parameter('end', $end),
+                    ]
+                )
+            )
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

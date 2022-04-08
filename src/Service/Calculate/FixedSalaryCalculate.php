@@ -14,4 +14,30 @@ class FixedSalaryCalculate extends AbstractCalculate implements PaymentCalculate
 
         return $salary;
     }
+
+    /**
+     * @return array
+     */
+    protected function getUnionContributions(): array
+    {
+        $payDate = clone $this->payDate;
+
+        $startDate = $payDate->modify('First day of this month');
+        $endDate = $payDate;
+
+        return $this->contributionRepository->getByPeriod($startDate, $endDate);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getServicesCharges(): array
+    {
+        $payDate = clone $this->payDate;
+
+        $startDate = $payDate->modify('First day of this month');
+        $endDate = $payDate;
+
+        return $this->chargeRepository->getByPeriod($startDate, $endDate);
+    }
 }

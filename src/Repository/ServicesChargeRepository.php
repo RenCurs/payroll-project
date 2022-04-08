@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\ServicesCharge;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +22,26 @@ class ServicesChargeRepository extends ServiceEntityRepository
         parent::__construct($registry, ServicesCharge::class);
     }
 
-    // /**
-    //  * @return ServicesCharge[] Returns an array of ServicesCharge objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return ServicesCharge[]
+     */
+    public function getByPeriod(DateTime $start, DateTime $end): array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('sc');
 
-    /*
-    public function findOneBySomeField($value): ?ServicesCharge
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
+        return $qb->andWhere(
+            $qb->expr()->gte('sc.date', ':start'),
+            $qb->expr()->lte('sc.date', ':end')
+        )
+            ->setParameters(
+                new ArrayCollection(
+                    [
+                        new Parameter('start', $start),
+                        new Parameter('end', $end),
+                    ]
+                )
+            )
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

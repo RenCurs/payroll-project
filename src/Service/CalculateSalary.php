@@ -2,26 +2,33 @@
 
 namespace App\Service;
 
+use App\Component\Dto\PayCheckDto;
+use App\Entity\Employee;
+use App\Entity\PayCheck;
 use App\Factory\PaymentCalculateFactory;
 use App\Factory\PaymentScheduleFactory;
 use App\Repository\EmployeeRepository;
 use DateTime;
-use function dump;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 class CalculateSalary
 {
     private EmployeeRepository $employeeRepository;
     private PaymentScheduleFactory $scheduleFactory;
     private PaymentCalculateFactory $calculateFactory;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(
         EmployeeRepository $employeeRepository,
         PaymentScheduleFactory $scheduleFactory,
-        PaymentCalculateFactory $calculateFactory
+        PaymentCalculateFactory $calculateFactory,
+        EntityManagerInterface $entityManager
     ) {
         $this->employeeRepository = $employeeRepository;
         $this->scheduleFactory = $scheduleFactory;
         $this->calculateFactory = $calculateFactory;
+        $this->entityManager = $entityManager;
     }
 
     public function execute(DateTime $date): void
@@ -34,10 +41,21 @@ class CalculateSalary
 
             if ($paymentSchedule->isPayDate($payDate)) {
                 $paymentCalculate = $this->calculateFactory->create($payDate, $employee);
-                $paymentEmployee = $paymentCalculate->calculate();
-
-                // todo Сделать создание чека с данным об услугах, взносах и итоговой зп
+                $this->savePayCheck($employee, $paymentCalculate->calculate());
             }
         }
+    }
+
+    private function savePayCheck(Employee $employee, PayCheckDto $payCheckDto): void
+    {
+        $check = (new PayCheck())
+            ->setEmployee($employee)
+            ->setSum($payCheckDto->baseSum)
+            ->setServicesCharge($payCheckDto->servicesChargeSum)
+            ->setUnionContribution($payCheckDto->unionContributionSum)
+            ->setTotalSum($payCheckDto->totalSum);
+
+        $this->entityManager->persist($check);
+        $this->entityManager->flush();
     }
 }

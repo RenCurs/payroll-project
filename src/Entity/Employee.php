@@ -67,9 +67,9 @@ class Employee
     private bool $isUnionAffiliation;
 
     /**
-     * @ORM\OneToOne(targetEntity=UnionContribution::class, mappedBy="employee", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=UnionContribution::class, mappedBy="employee", cascade={"persist", "remove"})
      */
-    private ?UnionContribution $unionContribution;
+    private $unionContribution;
 
     /**
      * @ORM\OneToOne(targetEntity=PayCheck::class, mappedBy="employee", cascade={"persist", "remove"})
@@ -101,6 +101,7 @@ class Employee
         $this->servicesCharges = new ArrayCollection();
         $this->timeCards = new ArrayCollection();
         $this->saleReceipts = new ArrayCollection();
+        $this->unionContribution = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -216,19 +217,34 @@ class Employee
         return $this;
     }
 
-    public function getUnionContribution(): ?UnionContribution
+    /**
+     * @return Collection|UnionContribution[]
+     */
+    public function getUnionContribution(): Collection
     {
         return $this->unionContribution;
     }
 
-    public function setUnionContribution(UnionContribution $unionContribution): self
+    public function addUnionContribution(UnionContribution $unionContribution): self
     {
         // set the owning side of the relation if necessary
-        if ($unionContribution->getEmployee() !== $this) {
+        if (!$this->unionContribution->contains($unionContribution)) {
+            $this->unionContribution->add($unionContribution);
             $unionContribution->setEmployee($this);
         }
 
-        $this->unionContribution = $unionContribution;
+        return $this;
+    }
+
+    public function removeUnionContribution(UnionContribution $unionContribution): self
+    {
+        // set the owning side of the relation if necessary
+        if (!$this->unionContribution->removeElement($unionContribution)) {
+            // set the owning side to null (unless already changed)
+            if ($unionContribution->getEmployee() === $this) {
+                $unionContribution->setEmployee(null);
+            }
+        }
 
         return $this;
     }

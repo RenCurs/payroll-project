@@ -12,11 +12,11 @@ class BiweeklyPaymentSchedule implements PaymentSchedule
     {
         // todo ???
         $payDate = clone $date;
-        $firstTwoTuesday = $payDate->modify('second tuesday')->format('l');
+        $firstTwoTuesday = $payDate->modify('second tuesday of this month')->format('d');
 
         $payDate = clone $date;
-        $secondTwoTuesday = $payDate->modify('fourth tuesday')->format('l');
+        $secondTwoTuesday = $payDate->modify('fourth tuesday of this month')->format('d');
 
-        return in_array($date->format('l'), [$firstTwoTuesday, $secondTwoTuesday], true);
+        return in_array($date->format('d'), [$firstTwoTuesday, $secondTwoTuesday], true);
     }
 }

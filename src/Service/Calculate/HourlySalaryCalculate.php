@@ -2,13 +2,15 @@
 
 namespace App\Service\Calculate;
 
-use App\Component\TimeSpentDto;
+use App\Component\Dto\TimeSpentDto;
 use App\Entity\Employee;
 use App\Entity\TimeCard;
 use App\Enum\TimeTypeEnum;
 use App\Exception\NotFullyWorkingHours;
 use App\Factory\PaymentCalculate;
+use App\Repository\ServicesChargeRepository;
 use App\Repository\TimeCardRepository;
+use App\Repository\UnionContributionRepository;
 use DateTime;
 
 class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculate
@@ -16,15 +18,16 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
     private const NORMAL = 8;
     private const OVER_TIME_MULTIPLE_RATE = 2;
 
-    private DateTime $payDate;
     private TimeCardRepository $timeCardRepository;
 
-    public function __construct(DateTime $payDate, Employee $employee, TimeCardRepository $timeCardRepository)
-    {
-        parent::__construct($employee);
-
-        $this->payDate = $payDate;
-        $this->employee = $employee;
+    public function __construct(
+        DateTime $payDate,
+        Employee $employee,
+        TimeCardRepository $timeCardRepository,
+        ServicesChargeRepository $chargeRepository,
+        UnionContributionRepository $contributionRepository
+    ) {
+        parent::__construct($payDate, $employee, $chargeRepository, $contributionRepository);
         $this->timeCardRepository = $timeCardRepository;
     }
 
@@ -143,5 +146,32 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
         if (self::NORMAL > $primaryTime && !empty($dto->overTime)) {
             throw new NotFullyWorkingHours('Работник не отработал норму, но работал в неурочное время');
         }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getUnionContributions(): array
+    {
+        $payDate = clone $this->payDate;
+
+        $startDate = $payDate->modify('First day of this week');
+        $endDate = $payDate;
+
+        return $this->contributionRepository->getByPeriod($startDate, $endDate);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getServicesCharges(): array
+    {
+        // todo Повторяется ???
+        $payDate = clone $this->payDate;
+
+        $startDate = $payDate->modify('First day of this week');
+        $endDate = $payDate;
+
+        return $this->chargeRepository->getByPeriod($startDate, $endDate);
     }
 }

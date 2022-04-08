@@ -50,7 +50,11 @@ class CalculateSalaryCommand extends Command
         try {
             $this->calculateSalary->execute($date);
         } catch (Throwable $exception) {
-            $output->writeln(sprintf('<error>%s</error>', $exception->getMessage()));
+            $output->writeln(sprintf(
+                '<error>%s\n%s</error>',
+                $exception->getMessage(),
+                $exception->getTraceAsString())
+            );
 
             return Command::FAILURE;
         }
