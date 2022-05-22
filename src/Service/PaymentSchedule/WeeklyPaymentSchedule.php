@@ -11,6 +11,8 @@ class WeeklyPaymentSchedule implements PaymentSchedule
 
     public function isPayDate(DateTime $date): bool
     {
-        return self::FRIDAY === $date->format('l');
+        $payDate = clone $date;
+
+        return self::FRIDAY === $payDate->format('l');
     }
 }

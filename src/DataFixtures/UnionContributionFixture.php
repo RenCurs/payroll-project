@@ -15,8 +15,8 @@ class UnionContributionFixture extends Fixture
         $contribution
             ->setEmployee($this->getReference(EmployeeFixture::TEST_USER))
             ->setSum(1000)
-            ->setDateStart(new DateTime('2022-02-14'))
-            ->setDateEnd(new DateTime('2022-02-18'));
+            ->setDateStart(new DateTime('2022-03-21'))
+            ->setDateEnd(new DateTime('2022-03-25'));
 
         $manager->persist($contribution);
         $manager->flush();

@@ -37,10 +37,12 @@ class PaymentCalculateFactory
 
     public function create(DateTime $dateTime, Employee $employee): PaymentCalculate
     {
+        $payDate = clone $dateTime;
+
         switch ($employee->getSalaryType()) {
             case PaymentTypeEnum::FIXED:
                 $calculate = new FixedSalaryCalculate(
-                    $dateTime,
+                    $payDate,
                     $employee,
                     $this->chargeRepository,
                     $this->contributionRepository
@@ -49,7 +51,7 @@ class PaymentCalculateFactory
                 break;
             case PaymentTypeEnum::HOURLY:
                 $calculate = new HourlySalaryCalculate(
-                    $dateTime,
+                    $payDate,
                     $employee,
                     $this->timeCardRepository,
                     $this->chargeRepository,
@@ -59,7 +61,7 @@ class PaymentCalculateFactory
                 break;
             case PaymentTypeEnum::JOBPRICE:
                 $calculate = new JobpriceSalaryCalculate(
-                    $dateTime,
+                    $payDate,
                     $employee,
                     $this->receiptRepository,
                     $this->chargeRepository,

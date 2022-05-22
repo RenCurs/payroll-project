@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Employee;
 use App\Entity\ServicesCharge;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -25,7 +26,7 @@ class ServicesChargeRepository extends ServiceEntityRepository
     /**
      * @return ServicesCharge[]
      */
-    public function getByPeriod(DateTime $start, DateTime $end): array
+    public function getByPeriod(Employee $employee, DateTime $start, DateTime $end): array
     {
         $qb = $this->createQueryBuilder('sc');
 
@@ -33,11 +34,13 @@ class ServicesChargeRepository extends ServiceEntityRepository
             $qb->expr()->gte('sc.date', ':start'),
             $qb->expr()->lte('sc.date', ':end')
         )
+            ->andWhere($qb->expr()->eq('sc.employee', ':employee'))
             ->setParameters(
                 new ArrayCollection(
                     [
                         new Parameter('start', $start),
                         new Parameter('end', $end),
+                        new Parameter('employee', $employee),
                     ]
                 )
             )

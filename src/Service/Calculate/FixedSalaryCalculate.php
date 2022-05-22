@@ -8,11 +8,7 @@ class FixedSalaryCalculate extends AbstractCalculate implements PaymentCalculate
 {
     public function calculateSalary(): float
     {
-        $salary = $this->employee->getSalary();
-        $this->subUnionContribution($salary);
-        $this->subUnionServiceCharge($salary);
-
-        return $salary;
+        return $this->employee->getSalary();
     }
 
     /**
@@ -20,12 +16,10 @@ class FixedSalaryCalculate extends AbstractCalculate implements PaymentCalculate
      */
     protected function getUnionContributions(): array
     {
-        $payDate = clone $this->payDate;
+        $startDate = (clone $this->payDate)->modify('First day of this month');
+        $endDate = clone $this->payDate;
 
-        $startDate = $payDate->modify('First day of this month');
-        $endDate = $payDate;
-
-        return $this->contributionRepository->getByPeriod($startDate, $endDate);
+        return $this->contributionRepository->getByPeriod($this->employee, $startDate, $endDate);
     }
 
     /**
@@ -38,6 +32,6 @@ class FixedSalaryCalculate extends AbstractCalculate implements PaymentCalculate
         $startDate = $payDate->modify('First day of this month');
         $endDate = $payDate;
 
-        return $this->chargeRepository->getByPeriod($startDate, $endDate);
+        return $this->chargeRepository->getByPeriod($this->employee, $startDate, $endDate);
     }
 }

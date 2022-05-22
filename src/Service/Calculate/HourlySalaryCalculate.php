@@ -11,6 +11,7 @@ use App\Factory\PaymentCalculate;
 use App\Repository\ServicesChargeRepository;
 use App\Repository\TimeCardRepository;
 use App\Repository\UnionContributionRepository;
+use DateInterval;
 use DateTime;
 
 class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculate
@@ -33,7 +34,10 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
 
     protected function calculateSalary(): float {
 
-        $spentTimes = $this->constructTimeSpent($this->timeCardRepository->getTimeCardsForWeek($this->payDate));
+        $spentTimes = $this->constructTimeSpent($this->timeCardRepository->getTimeCardsForWeek(
+            $this->employee,
+            clone $this->payDate
+        ));
         $totalPrimarySalary = $totalOverTimeSalary = 0;
 
         /** @var TimeSpentDto $timeSpentDto */
@@ -166,12 +170,9 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
      */
     protected function getServicesCharges(): array
     {
-        // todo Повторяется ???
-        $payDate = clone $this->payDate;
+        $startDate = (clone $this->payDate)->sub(new DateInterval('P4D'));
+        $endDate = clone $this->payDate;
 
-        $startDate = $payDate->modify('First day of this week');
-        $endDate = $payDate;
-
-        return $this->chargeRepository->getByPeriod($startDate, $endDate);
+        return $this->chargeRepository->getByPeriod($this->employee, $startDate, $endDate);
     }
 }

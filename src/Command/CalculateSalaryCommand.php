@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Service\CalculateSalary;
 use DateTime;
 use DateTimeZone;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,11 +18,14 @@ class CalculateSalaryCommand extends Command
     protected static $defaultDescription = 'Calculate salary for employee';
 
     private CalculateSalary $calculateSalary;
+    private LoggerInterface $logger;
 
-    public function __construct(CalculateSalary $calculateSalary)
+    public function __construct(CalculateSalary $calculateSalary, LoggerInterface $logger)
     {
         parent::__construct();
+
         $this->calculateSalary = $calculateSalary;
+        $this->logger = $logger;
     }
 
     protected function configure(): void
@@ -50,6 +54,7 @@ class CalculateSalaryCommand extends Command
         try {
             $this->calculateSalary->execute($date);
         } catch (Throwable $exception) {
+            $this->logger->error($exception->getMessage(), ['payDate' => $date]);
             $output->writeln(sprintf(
                 '<error>%s\n%s</error>',
                 $exception->getMessage(),

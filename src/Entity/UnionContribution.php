@@ -6,6 +6,7 @@ use App\Repository\UnionContributionRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
+// TODO Проверить сущность, для чего нужны даты начало и окончания?
 /**
  * @ORM\Entity(repositoryClass=UnionContributionRepository::class)
  */

@@ -50,7 +50,7 @@ abstract class AbstractCalculate
     {
         $result = 0;
 
-        if ($this->employee->getIsUnionAffiliation()) {
+        if (true === $this->employee->getIsUnionAffiliation()) {
             $contributions = $this->getUnionContributions();
 
             foreach ($contributions as $contribution) {
@@ -81,6 +81,7 @@ abstract class AbstractCalculate
         $check->baseSum = $baseSalary;
         $check->unionContributionSum = $unionContribution;
         $check->servicesChargeSum = $servicesCharge;
+        $check->totalSum = $baseSalary - $servicesCharge - $unionContribution;
 
         return $check;
     }

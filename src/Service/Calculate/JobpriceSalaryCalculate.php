@@ -61,7 +61,7 @@ class JobpriceSalaryCalculate extends AbstractCalculate implements PaymentCalcul
         $startDate = clone $this->employee->getLastPayDate();
         $startDate = $startDate->modify('+ 1 days');
 
-        return $this->contributionRepository->getByPeriod($startDate, $endDate);
+        return $this->contributionRepository->getByPeriod($this->employee, $startDate, $endDate);
     }
 
     /**
@@ -73,6 +73,6 @@ class JobpriceSalaryCalculate extends AbstractCalculate implements PaymentCalcul
         $startDate = clone $this->employee->getLastPayDate();
         $startDate = $startDate->modify('+ 1 days');
 
-        return $this->chargeRepository->getByPeriod($startDate, $endDate);
+        return $this->chargeRepository->getByPeriod($this->employee, $startDate, $endDate);
     }
 }

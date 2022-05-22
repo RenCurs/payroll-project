@@ -41,19 +41,20 @@ class CalculateSalary
 
             if ($paymentSchedule->isPayDate($payDate)) {
                 $paymentCalculate = $this->calculateFactory->create($payDate, $employee);
-                $this->savePayCheck($employee, $paymentCalculate->calculate());
+                $this->savePayCheck($employee, $paymentCalculate->calculate(), $payDate);
             }
         }
     }
 
-    private function savePayCheck(Employee $employee, PayCheckDto $payCheckDto): void
+    private function savePayCheck(Employee $employee, PayCheckDto $payCheckDto, DateTime $payDate): void
     {
         $check = (new PayCheck())
             ->setEmployee($employee)
             ->setSum($payCheckDto->baseSum)
             ->setServicesCharge($payCheckDto->servicesChargeSum)
             ->setUnionContribution($payCheckDto->unionContributionSum)
-            ->setTotalSum($payCheckDto->totalSum);
+            ->setTotalSum($payCheckDto->totalSum)
+            ->setDate($payDate);
 
         $this->entityManager->persist($check);
         $this->entityManager->flush();

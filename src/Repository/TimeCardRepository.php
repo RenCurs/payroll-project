@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Employee;
 use App\Entity\TimeCard;
 use DateInterval;
 use DateTime;
@@ -27,7 +28,7 @@ class TimeCardRepository extends ServiceEntityRepository
     /**
      * @return TimeCard[]
      */
-    public function getTimeCardsForWeek(DateTime $currentDate): array
+    public function getTimeCardsForWeek(Employee $employee, DateTime $currentDate): array
     {
         $friday = clone $currentDate;
         $monday = $currentDate->sub(new DateInterval('P4D'));
@@ -39,9 +40,11 @@ class TimeCardRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('tc');
 
         $qb->where($qb->expr()->between('tc.date', ':monday', ':friday'))
+            ->andWhere($qb->expr()->eq('tc.employee', ':employee'))
             ->setParameters(new ArrayCollection([
                     new Parameter('monday', $monday),
                     new Parameter('friday', $friday),
+                    new Parameter('employee', $employee),
                 ]
             ));
 

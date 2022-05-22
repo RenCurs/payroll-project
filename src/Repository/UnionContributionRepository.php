@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Employee;
 use App\Entity\UnionContribution;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -26,19 +27,23 @@ class UnionContributionRepository extends ServiceEntityRepository
     /**
      * @return UnionContribution[]
      */
-    public function getByPeriod(DateTime $start, DateTime $end): array
+    public function getByPeriod(Employee $employee, DateTime $start, DateTime $end): array
     {
+        // TODO учет работника!
         $qb = $this->createQueryBuilder('uc');
 
-        return $qb->andWhere(
-            $qb->expr()->gte('uc.dateStart', ':start'),
-            $qb->expr()->lte('uc.dateEnd', ':end')
-        )
+        return $qb
+            ->where($qb->expr()->eq('uc.employee', ':employee'))
+            ->andWhere(
+                $qb->expr()->gte('uc.dateStart', ':start'),
+                $qb->expr()->lte('uc.dateEnd', ':end')
+            )
             ->setParameters(
                 new ArrayCollection(
                     [
                         new Parameter('start', $start),
                         new Parameter('end', $end),
+                        new Parameter('employee', $employee),
                     ]
                 )
             )

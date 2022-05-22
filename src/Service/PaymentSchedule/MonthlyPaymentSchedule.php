@@ -13,8 +13,8 @@ class MonthlyPaymentSchedule implements PaymentSchedule
      */
     public function isPayDate(DateTime $date): bool
     {
-        $lastDay = $date->format('t');
-        $currentDay = $date->format('d');
+        $lastDay = (clone $date)->format('t');
+        $currentDay = (clone $date)->format('d');
 
         return $lastDay === $currentDay;
     }

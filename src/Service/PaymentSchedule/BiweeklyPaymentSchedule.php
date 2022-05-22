@@ -10,7 +10,6 @@ class BiweeklyPaymentSchedule implements PaymentSchedule
 
     public function isPayDate(DateTime $date): bool
     {
-        // todo ???
         $payDate = clone $date;
         $firstTwoTuesday = $payDate->modify('second tuesday of this month')->format('d');
 

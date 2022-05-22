@@ -17,6 +17,7 @@ class ServicesCharge
      */
     private $id;
 
+    // TODO Для чего нужно??
     /**
      * @ORM\Column(type="string", length=60)
      */

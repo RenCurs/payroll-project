@@ -169,7 +169,7 @@ class Employee
         return $this;
     }
 
-    public function getIsUnionAffiliation(): ?string
+    public function getIsUnionAffiliation(): bool
     {
         return $this->isUnionAffiliation;
     }
