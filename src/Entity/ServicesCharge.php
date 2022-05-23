@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ServicesChargeRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,13 +16,7 @@ class ServicesCharge
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
-
-    // TODO Для чего нужно??
-    /**
-     * @ORM\Column(type="string", length=60)
-     */
-    private $type;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -31,36 +26,24 @@ class ServicesCharge
     /**
      * @ORM\Column(type="float")
      */
-    private $cost;
+    private float $cost = 0;
 
     /**
      * @ORM\Column(type="date")
      */
-    private $date;
+    private DateTimeInterface $date;
 
     /**
      * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="servicesCharges")
      */
-    private $employee;
+    private Employee $employee;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getCost(): ?float
+    public function getCost(): float
     {
         return $this->cost;
     }
@@ -72,12 +55,12 @@ class ServicesCharge
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
 
@@ -96,7 +79,7 @@ class ServicesCharge
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
