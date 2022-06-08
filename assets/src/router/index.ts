@@ -1,27 +1,14 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+import mainRouting from '@/components/accountant/main/routing'
 
 Vue.use(VueRouter);
 
-const routes: Array<RouteConfig> = [
-    {
-        path: '/',
-        name: 'home',
-        component: HomeView
-    },
-    {
-        path: '/about',
-        name: 'about',
-
-        component: () =>
-            import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-    }
-];
+const routes: Array<RouteConfig> = [];
 
 const router = new VueRouter({
     mode: 'history',
-    routes
+    routes: routes.concat(mainRouting)
 });
 
 export default router;

@@ -13,12 +13,14 @@ services:
     volumes:
       - ./assets:/assets
     working_dir: /assets
-    command: yarn serve
+    user: "${UID:-1000}:${GID:-1000}"
+    command: sh -c "yarn install && yarn serve"
 
   app:
     build:
       context: .
       dockerfile: .docker/php/Dockerfile
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/var/www/html/
 
