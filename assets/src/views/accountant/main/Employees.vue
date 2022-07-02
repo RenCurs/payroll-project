@@ -31,8 +31,7 @@
                                 <button
                                     type="button"
                                     class="btn btn-outline-info"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editModal"
+                                    @click="$router.push({ name: 'edit_employee', params: { employeeId: String(employee.id) }})"
                                 >
                                     Редактировать
                                 </button>
@@ -52,49 +51,8 @@
             </table>
         </div>
 
-        <!--        Modal window for edit button-->
-        <!--       TODO в отдельный компонент ??? -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Редактирование сотрудника</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div>
-                            <div class="mb-3">
-                                <label for="inputFio" class="form-label">ФИО</label>
-                                <input type="text" class="form-control" id="inputFio">
-                                <div class="form-text">We'll never share your email with anyone else.</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="dateBirth" class="form-label">Дата рождения</label>
-                                <input type="date" class="form-control" id="dateBirth">
-                            </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="Check1">
-                                <label class="form-check-label" for="Check1">Check me out</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            data-bs-dismiss="modal"
-                            @click="removeEmployee"
-                        >
-                            Сохранить
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!--        Modal window for remove button-->
-        <div class="modal fade" id="removeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="removeModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -118,15 +76,17 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Employee from '@/types/Employee'
+import EditEmployee from '@/components/accountant/edit/EditEmployee.vue'
 
-@Component
+@Component({
+    components: { EditEmployee }
+})
 export default class Employees extends Vue {
     private static REMOVE_EMPLOYEE_EVENT = 'removeEmployeeEvent'
 

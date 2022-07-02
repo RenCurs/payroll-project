@@ -1,14 +1,19 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import mainRouting from '@/components/accountant/main/routing'
+import employeeRoutes from '@/components/accountant/routing'
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [];
 
+const notFoundRoute: RouteConfig = {
+    path: '*',
+    component: () => import('@/components/NotFound.vue')
+}
+
 const router = new VueRouter({
     mode: 'history',
-    routes: routes.concat(mainRouting)
+    routes: routes.concat(employeeRoutes, notFoundRoute)
 });
 
 export default router;

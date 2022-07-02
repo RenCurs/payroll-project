@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<script>
+<script class="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
 

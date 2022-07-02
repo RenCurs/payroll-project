@@ -1,11 +1,14 @@
+import { EmployeePropertyEnum } from '@/types/EmployeePropertyEnum'
+
 export default interface Employee {
-    id: number | undefined;
-    fio: string;
-    dateBirth: string,
-    salaryType: string,
-    paymentSchedule: string,
-    salary: number | undefined,
-    hourTariff?: number,
-    commissionRate?: number | undefined,
-    lastPayDate: string
+    [EmployeePropertyEnum.id]?: number;
+    [EmployeePropertyEnum.fio]: string;
+    [EmployeePropertyEnum.dateBirth]: string,
+    [EmployeePropertyEnum.salaryType]: string,
+    [EmployeePropertyEnum.paymentSchedule]: string,
+    [EmployeePropertyEnum.salary]?: number,
+    [EmployeePropertyEnum.hourTariff]?: number,
+    [EmployeePropertyEnum.commissionRate]?: number,
+    [EmployeePropertyEnum.lastPayDate]?: string
+    [EmployeePropertyEnum.isUnionAffiliation]: boolean
 }
