@@ -11,6 +11,7 @@ interface ConfigRequest<D> {
     data?: D;
 }
 
+// TODO ???
 interface HttpClientInterface {
     get<Type>(url: string, config?: ConfigRequest<Type>): Promise<Response<Type>>
     post<Type, Res>(url: string, data: Type, config?: ConfigRequest<Type>): Promise<Response<Res>>

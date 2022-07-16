@@ -1,1 +1,1 @@
-{"base_url":"","routes":[],"prefix":"","host":"localhost","port":"","scheme":"http","locale":""}
+{"base_url":"","routes":{"api_get_employee":{"tokens":[["variable","\/","[^\/]++","id",true],["text","\/api\/employees"]],"defaults":[],"requirements":[],"hosttokens":[],"methods":["GET"],"schemes":[]},"api_get_employees_list":{"tokens":[["text","\/api\/employees"]],"defaults":[],"requirements":[],"hosttokens":[],"methods":["GET"],"schemes":[]}},"prefix":"","host":"localhost","port":"","scheme":"http","locale":""}

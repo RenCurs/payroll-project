@@ -18,4 +18,12 @@ class EmployeeController extends AbstractController
     {
         return $this->json(['success' => true, 'id' => $id]);
     }
+
+    /**
+     * @Route("/employees", name="get_employees_list", methods={"GET"})
+     */
+    public function getEmployeesList(): Response
+    {
+        return $this->json([]);
+    }
 }
