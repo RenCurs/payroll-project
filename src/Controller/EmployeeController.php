@@ -2,21 +2,39 @@
 
 namespace App\Controller;
 
+use App\Service\EmployeeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  *  @Route("/api", name="api_")
  */
 class EmployeeController extends AbstractController
 {
+    private EmployeeService $service;
+    private SerializerInterface $serializer;
+
+    public function __construct(EmployeeService $service, SerializerInterface $serializer)
+    {
+        $this->service = $service;
+        $this->serializer = $serializer;
+    }
+
     /**
      * @Route("/employees/{id}", name="get_employee", methods={"GET"})
      */
     public function getEmployeeBydId(int $id): Response
     {
-        return $this->json(['success' => true, 'id' => $id]);
+        $response = $this->serializer->serialize(
+            $this->service->findById($id),
+            'json',
+            ['groups' => ['account']]
+        );
+
+        return new JsonResponse($response, Response::HTTP_OK, [], true);
     }
 
     /**
@@ -24,6 +42,8 @@ class EmployeeController extends AbstractController
      */
     public function getEmployeesList(): Response
     {
-        return $this->json([]);
+        $response = $this->serializer->serialize($this->service->findAll(), 'json', ['groups' => ['account']]);
+
+        return new JsonResponse($response, Response::HTTP_OK, [], true);
     }
 }

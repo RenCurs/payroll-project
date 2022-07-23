@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=EmployeeRepository::class)
@@ -18,61 +19,86 @@ class Employee
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @Groups({"account"})
+     *
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Groups({"account"})
      */
     private string $fio;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Groups({"account"})
      */
     private string $address;
 
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @Groups({"account"})
      */
     private DateTime $dateBirth;
 
     /**
      * @ORM\Column(type="string", length=50)
+     *
+     * @Groups({"account"})
      */
     private string $salaryType;
 
     /**
      * @ORM\Column(type="string", length=50)
+     *
+     * @Groups({"account"})
      */
     private string $paymentSchedule;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     *
+     * @Groups({"account"})
      */
     private ?float $salary;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     *
+     * @Groups({"account"})
      */
     private ?float $hourTariff;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     *
+     * @Groups({"account"})
      */
     private ?float $commissionRate;
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})
+     *
+     * @Groups({"account"})
      */
     private bool $isUnionAffiliation;
 
     /**
      * @ORM\OneToMany(targetEntity=UnionContribution::class, mappedBy="employee", cascade={"persist", "remove"})
+     *
+     * @Groups({"account"})
      */
     private $unionContribution;
 
     /**
      * @ORM\OneToOne(targetEntity=PayCheck::class, mappedBy="employee", cascade={"persist", "remove"})
+     *
+     * @Groups({"account"})
      */
     private $payCheck;
 
@@ -83,11 +109,15 @@ class Employee
 
     /**
      * @ORM\OneToMany(targetEntity=TimeCard::class, mappedBy="employee", orphanRemoval=true)
+     *
+     * @Groups({"account"})
      */
     private $timeCards;
 
     /**
      * @ORM\OneToMany(targetEntity=SaleReceipt::class, mappedBy="employee", orphanRemoval=true)
+     *
+     * @Groups({"account"})
      */
     private $saleReceipts;
 

@@ -1,10 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
 import { Response, ConfigRequest, HttpClientInterface } from '@/api/client/ClientInterface'
-import routes from '../../../fos_js_routes.json'
-import { SingletonRouter } from 'symfony-ts-router/dist/shim/singleton-router'
-import { RoutingData } from 'symfony-ts-router'
-
-SingletonRouter.setData(routes as unknown as RoutingData)
 
 const axiosInstance = axios.create({
     headers: {

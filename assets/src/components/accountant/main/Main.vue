@@ -17,6 +17,8 @@ import Component from 'vue-class-component'
 import Employees from '@/views/accountant/main/Employees.vue'
 import Employee from '@/types/Employee'
 import HeaderLayout from '@/views/layout/HeaderLayout.vue'
+import { Actions } from '@/store/actions'
+import { Action } from 'vuex-class'
 
 @Component({
     components: { HeaderLayout, Employees }
@@ -24,30 +26,15 @@ import HeaderLayout from '@/views/layout/HeaderLayout.vue'
 export default class Main extends Vue {
     private employees: Array<Employee> = []
 
+    @Action(Actions.getEmployees)
+    private getEmployees: () => Promise<Array<Employee>>
+
     async created(): Promise<void> {
-        // request back
-        this.employees = [
-            {
-                id: 1,
-                fio: 'Иванов Иван Иванович',
-                dateBirth: '2000-01-01',
-                salaryType: 'fixed',
-                paymentSchedule: 'monthly',
-                salary: 30000,
-                lastPayDate: '2022-05-30',
-                isUnionAffiliation: true
-            },
-            {
-                id: 2,
-                fio: 'Петров Максим Артемович',
-                dateBirth: '1985-01-01',
-                salaryType: 'fixed',
-                paymentSchedule: 'monthly',
-                salary: 130000,
-                lastPayDate: '2022-05-30',
-                isUnionAffiliation: true
-            }
-        ]
+        try {
+            this.employees = await this.getEmployees()
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     removeEmployee(employeeId: number): void {

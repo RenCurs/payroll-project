@@ -18,6 +18,8 @@ import HeaderLayout from '@/views/layout/HeaderLayout.vue'
 import Employee from '@/types/Employee'
 import EmployeeView from '@/views/accountant/EmployeeView.vue'
 import { getEmptyEmployee } from '@/helpers'
+import { Action } from 'vuex-class'
+import { Actions } from '@/store/actions'
 
 @Component({
     components: { EmployeeView, HeaderLayout }
@@ -28,20 +30,15 @@ export default class EditEmployee extends Vue {
 
     private employee: Employee = getEmptyEmployee()
 
+    @Action(Actions.getEmployeeById)
+    private getEmployeeId: (id: number) => Promise<Employee>
+
     async created (): Promise<void> {
-        // request to back for get employee by id
-        setTimeout(() => {
-            this.employee = {
-                id: 2,
-                fio: 'Петров Максим Артемович',
-                dateBirth: '1985-01-01',
-                salaryType: 'jobprice',
-                paymentSchedule: 'biweekly',
-                salary: 130_000,
-                lastPayDate: '2022-05-30',
-                isUnionAffiliation: false
-            }
-        }, 2000)
+        try {
+            this.employee = await this.getEmployeeId(Number(this.employeeId))
+        } catch (err) {
+            console.log(err)
+        }
     }
 }
 
