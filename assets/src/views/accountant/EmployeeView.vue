@@ -1,23 +1,38 @@
 <template>
     <div>
         <div class="wrap-edit-employee">
+            <div
+                v-for="(errors, fieldName) in errorsValidation"
+                :key="fieldName"
+                class="alert alert-danger alert-dismissible fade show"
+                role="alert"
+            >
+                <span
+                    v-for="(error, idx) of errors"
+                    :key="idx"
+                >
+                    {{ error }}
+                </span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                    @click="clearErrors(fieldName)"
+                ></button>
+            </div>
             <div class="mb-3">
                 <label for="inputFio" class="form-label">ФИО</label>
                 <input
-                    :class="{'control-error': !!errorsValidation.fio}"
                     v-model="currentEmployee.fio"
                     type="text"
                     class="form-control"
                     id="inputFio"/>
-                <div v-if="!!errorsValidation.fio" class="form-text text-danger">
-                    {{ errorsValidation.fio }}
-                </div>
             </div>
             <div class="mb-3">
                 <label for="dateBirth" class="form-label">Дата рождения</label>
                 <!--                            TODO вынести даты-->
                 <input
-                    :class="{'control-error': !!errorsValidation.dateBirth}"
                     v-model="currentEmployee.dateBirth"
                     type="date"
                     class="form-control"
@@ -25,14 +40,10 @@
                     min="1920-01-01"
                     max="2050-01-01"
                 >
-                <div v-if="!!errorsValidation.dateBirth" class="form-text text-danger">
-                    {{ errorsValidation.dateBirth }}
-                </div>
             </div>
             <div class="mb-3">
                 <label for="salaryType" class="form-label">Тип оплаты</label>
                 <select
-                    :class="{'control-error': !!errorsValidation.salaryType}"
                     v-model="currentEmployee.salaryType" id="salaryType"
                     class="form-select"
                 >
@@ -45,14 +56,10 @@
                         {{ code }}
                     </option>
                 </select>
-                <div v-if="!!errorsValidation.salaryType" class="form-text text-danger">
-                    {{ errorsValidation.salaryType }}
-                </div>
             </div>
             <div class="mb-3">
                 <label for="salaryType" class="form-label">Схема оплаты</label>
                 <select
-                    :class="{'control-error': !!errorsValidation.paymentSchedule}"
                     v-model="currentEmployee.paymentSchedule"
                     id="salaryType"
                     class="form-select"
@@ -66,30 +73,18 @@
                         {{ code }}
                     </option>
                 </select>
-                <div v-if="!!errorsValidation.paymentSchedule" class="form-text text-danger">
-                    {{ errorsValidation.paymentSchedule }}
-                </div>
             </div>
             <div class="mb-3">
                 <label for="salary" class="form-label">Оклад</label>
                 <input v-model="currentEmployee.salary" type="text" class="form-control" id="salary">
-                <div v-if="!!errorsValidation.salary" class="form-text text-danger">
-                    {{ errorsValidation.salary }}
-                </div>
             </div>
             <div class="mb-3">
                 <label for="hourTariff" class="form-label">Часовая ставка</label>
                 <input v-model="currentEmployee.hourTariff" type="text" class="form-control" id="hourTariff">
-                <div v-if="!!errorsValidation.hourTariff" class="form-text text-danger">
-                    {{ errorsValidation.hourTariff }}
-                </div>
             </div>
             <div class="mb-3">
                 <label for="percent" class="form-label">Процент комиссии</label>
                 <input v-model="currentEmployee.commissionRate" type="text" class="form-control" id="percent">
-                <div v-if="!!errorsValidation.commissionRate" class="form-text text-danger">
-                    {{ errorsValidation.commissionRate }}
-                </div>
             </div>
             <div class="form-check">
                 <label class="form-check-label" for="unionAffiliation">Член профсоюза</label>
@@ -118,7 +113,7 @@ export default class EmployeeView extends Vue {
     @Prop({ type: Object, default: () => ({}) })
     private employee: Employee
 
-    private errorsValidation: {[key: string]: string} = {}
+    private errorsValidation: {[key: string]: Array<string>} = {}
     private currentEmployee: Employee = getEmptyEmployee()
     private CHANGE_EMPLOYEE_EVENT = 'changeEmployeeEvent'
 
@@ -133,9 +128,10 @@ export default class EmployeeView extends Vue {
 
     private changeEmployee(): void {
         this.errorsValidation = {}
+
         const errors = validateEmployee(this.currentEmployee)
         if (Object.keys(errors).length > 0) {
-            this.errorsValidation = errors
+            this.errorsValidation = { ...errors }
 
             return
         }
@@ -143,11 +139,17 @@ export default class EmployeeView extends Vue {
         this.$emit(this.CHANGE_EMPLOYEE_EVENT, this.currentEmployee)
     }
 
+    private clearErrors(fieldName: string) {
+        delete this.errorsValidation[fieldName]
+        this.errorsValidation = { ...this.errorsValidation }
+    }
+
+    // TODO вынести
     private salaryTypes(): Array<string> {
-        // TODO вынести
         return ['fixed', 'jobprice', 'hourly']
     }
 
+    // TODO вынести
     private paymentSchedules(): Array<string> {
         return ['monthly', 'weekly', 'biweekly']
     }
@@ -161,9 +163,5 @@ export default class EmployeeView extends Vue {
     border-radius: 10px;
     box-shadow: 1px 1px 5px 1px;
     padding: 15px;
-}
-
-.control-error {
-    border-color: #dc3545;
 }
 </style>

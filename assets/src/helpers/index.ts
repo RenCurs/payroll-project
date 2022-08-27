@@ -12,34 +12,76 @@ function getEmptyEmployee(): Employee {
 }
 
 function validateEmployee(employee: Employee) {
-    // TODO Или сделать через массив правил???
-    const zeroValue = 0
-    const errors: {[key: string]: string} = {}
+    const rules = {
+        [EmployeePropertyEnum.fio]: (fio: string) => validateFio(fio),
+        [EmployeePropertyEnum.dateBirth]: (dateBirth: string) => validateBirthDate(dateBirth),
+        base: (empl: Employee) => baseValidate(empl)
+    }
+    const errorsByField: {[key: string]: Array<string>} = {}
+
+    for (const validateField of Object.keys(rules)) {
+        let field
+        let errors: Array<string>
+
+        if (Object.hasOwnProperty.call(employee, validateField)) {
+            field = validateField
+            errors = rules[validateField](employee[validateField])
+        } else {
+            errors = rules[validateField](employee)
+            field = 'base'
+        }
+
+        if (errors.length > 0) {
+            errorsByField[field] = errors
+        }
+    }
+
+    return errorsByField
+}
+
+// TODO Вынести в отдельный класс
+// TODO Добавить переводы
+// TODO Посмотреть библиотеку для валидации
+function validateFio(fio: string): Array<string> {
+    const errors: string[] = []
+
+    if (!fio) {
+        errors.push('Fio must not be empty')
+    } else if (fio.trim().length <= 5) {
+        errors.push('Min length of fio must be >= 5')
+    }
+
+    return errors
+}
+
+function validateBirthDate(dateBirth: string): Array<string> {
+    const errors: string[] = []
+
+    if (!dateBirth) {
+        errors.push('Must not be empty')
+    }
+
+    return errors
+}
+
+function baseValidate(employee: Employee): Array<string> {
+    const errors: string[] = []
+
     const salariesProperty: Array<string> = [
         EmployeePropertyEnum.salary,
         EmployeePropertyEnum.hourTariff,
         EmployeePropertyEnum.commissionRate
     ]
-    const exceptProperty = [
-        EmployeePropertyEnum.id,
-        EmployeePropertyEnum.lastPayDate,
-        EmployeePropertyEnum.isUnionAffiliation
-    ]
-    const baseProperties = Object.values(EmployeePropertyEnum)
-        .filter((property) => !exceptProperty.includes(property))
 
-    for (const property of baseProperties) {
-        if (!employee[property] && employee[property] !== zeroValue) {
-            // TODO перевод
-            errors[property] = 'Must not be empty'
+    const specifySalaryTypes = salariesProperty.filter((property) => !!employee[property])
 
-            continue
-        }
+    if (specifySalaryTypes.length === 0 || specifySalaryTypes.length > 1) {
+        errors.push('Only one of the salary type field must be specify: salary, commission rate, hourly tariff')
+    } else {
+        const specifyType = specifySalaryTypes[0]
 
-        if (salariesProperty.includes(property)) {
-            if (isNaN(Number(employee[property]))) {
-                errors[property] = 'Must be integer value'
-            }
+        if (isNaN(employee[specifyType])) {
+            errors.push(`${specifyType} must be integer of float`)
         }
     }
 
