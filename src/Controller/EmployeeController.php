@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Employee;
 use App\Service\EmployeeService;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -31,7 +35,13 @@ class EmployeeController extends AbstractController
         $response = $this->serializer->serialize(
             $this->service->findById($id),
             'json',
-            ['groups' => ['account']]
+            [
+                'groups' => ['account'],
+                // TODO возможно как-нибудь через св-во указать формат, что не дублировать?
+                AbstractNormalizer::CALLBACKS => [
+                    'dateBirth' => fn (DateTime $innerObject) => $innerObject->format('Y-m-d')
+                ]
+            ]
         );
 
         return new JsonResponse($response, Response::HTTP_OK, [], true);
@@ -42,7 +52,17 @@ class EmployeeController extends AbstractController
      */
     public function getEmployeesList(): Response
     {
-        $response = $this->serializer->serialize($this->service->findAll(), 'json', ['groups' => ['account']]);
+        $employees  = $this->service->findAll();
+        $response = $this->serializer->serialize(
+            $this->service->findAll(),
+            'json',
+            [
+                'groups' => ['account'],
+                AbstractNormalizer::CALLBACKS => [
+                    'dateBirth' => fn (DateTime $innerObject) => $innerObject->format('Y-m-d')
+                ]
+            ]
+        );
 
         return new JsonResponse($response, Response::HTTP_OK, [], true);
     }

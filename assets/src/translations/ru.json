@@ -1,0 +1,30 @@
+{
+  "employee": {
+    "list": "Список сотрудников",
+    "add": "Добавить сотрудника",
+    "fields": {
+      "ID": "ID",
+      "fio": "ФИО",
+      "dateBirth": "Дата рождения",
+      "salaryType": "Тип выплаты",
+      "scheduleSalary": "График выплат"
+    },
+    "actions": {
+      "title": "Действия",
+      "edit": "Редактировать",
+      "delete": "Удалить"
+    }
+  },
+  "logout": "Выйти",
+  "paymentSchedule": {
+    "weekly": "Еженедельный",
+    "monthly": "Ежемесячный",
+    "biweekly": "Раз в две недели"
+  },
+  "salaryType": {
+    "hourly": "Почасовая",
+    "fixed": "Оклад",
+    "job_price": "Сдельная (%)"
+  },
+  "currentUser": "Пользователь: "
+}

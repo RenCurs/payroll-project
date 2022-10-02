@@ -4,13 +4,12 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <!-- TODO В translations-->
-                        <th scope="col">ID</th>
-                        <th scope="col">ФИО</th>
-                        <th scope="col">Дата рождения</th>
-                        <th scope="col">Тип платы</th>
-                        <th scope="col">Тип выплаты</th>
-                        <th scope="col">Действия</th>
+                        <th scope="col">{{ $t('employee.fields.ID') }}</th>
+                        <th scope="col">{{ $t('employee.fields.fio') }}</th>
+                        <th scope="col">{{ $t('employee.fields.dateBirth') }}</th>
+                        <th scope="col">{{ $t('employee.fields.salaryType') }}</th>
+                        <th scope="col">{{ $t('employee.fields.scheduleSalary') }}</th>
+                        <th scope="col">{{ $t('employee.actions.title') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,9 +22,8 @@
                         </td>
                         <td>{{ employee.fio}}</td>
                         <td>{{ employee.dateBirth}}</td>
-                        <!-- TODO В translations-->
-                        <td>{{ employee.salaryType}}</td>
-                        <td>{{ employee.paymentSchedule}}</td>
+                        <td>{{ $t(`salaryType.${employee.salaryType}`) }}</td>
+                        <td>{{ $t(`paymentSchedule.${employee.paymentSchedule}`) }}</td>
                         <td>
                             <div>
                                 <button
@@ -33,7 +31,7 @@
                                     class="btn btn-outline-info"
                                     @click="$router.push({ name: 'edit_employee', params: { employeeId: String(employee.id) }})"
                                 >
-                                    Редактировать
+                                    {{ $t('employee.actions.edit') }}
                                 </button>
                                 <button
                                     type="button"
@@ -42,7 +40,7 @@
                                     data-bs-target="#removeModal"
                                     @click="initRemoveEmployee(employee)"
                                 >
-                                    Удалить
+                                    {{ $t('employee.actions.delete') }}
                                 </button>
                             </div>
                         </td>

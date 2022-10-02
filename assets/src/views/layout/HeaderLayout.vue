@@ -6,18 +6,22 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" role="button" @click="redirectToAllEmployees">Список сотрудников</a>
+                                <a class="nav-link" role="button" @click="redirectToAllEmployees">{{ $t('employee.list') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" role="button" @click="redirectToCreateEmployee">Добавить сотрудника</a>
+                                <a class="nav-link" role="button" @click="redirectToCreateEmployee">{{ $t('employee.add') }}</a>
                             </li>
                         </ul>
-                        <div class="d-flex">
-                            <span class="navbar-text">
-                                Current user: Test
-                            </span>
-                            <a class="nav-link" role="button" @click="redirectToCreateEmployee">Добавить сотрудника</a>
-                        </div>
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <div style="margin-right: 20px ;padding-bottom: 0.5em; padding-top: 0.5em;">
+                                    <span class="text-success text-bold">{{ $t('currentUser') }} Test</span>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" role="button">{{ $t('logout') }}</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </nav>
