@@ -26,6 +26,9 @@
                 </div>
             </nav>
         </div>
+        <Loader
+            v-if="isLoading"
+        />
         <div>
             <slot name="content"></slot>
         </div>
@@ -35,9 +38,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-
-@Component
+import Loader from '@/views/Loader.vue'
+import { Getter } from 'vuex-class'
+import { Getters } from '@/store/getters'
+@Component({
+    components: { Loader }
+})
 export default class HeaderLayout extends Vue {
+    @Getter(Getters.isLoading)
+    private isLoading: boolean
+
     private redirectToCreateEmployee() {
         if (this.$router.currentRoute.name !== 'create_employee') {
             this.$router.push({ name: 'create_employee' })
