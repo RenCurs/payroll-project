@@ -15,13 +15,11 @@
         "version": "1.13",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "a2759dd6123694c8d901d0ec80006e044c2e6457"
+            "branch": "main",
+            "version": "1.10",
+            "ref": "64d8583af5ea57b7afa4aba4b159907f3a148b05"
         },
-        "files": [
-            "config/routes/annotations.yaml"
-        ]
+        "files": []
     },
     "doctrine/cache": {
         "version": "2.1.1"
@@ -42,17 +40,15 @@
         "version": "v0.5.3"
     },
     "doctrine/doctrine-bundle": {
-        "version": "2.5",
+        "version": "2.7",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "2.4",
-            "ref": "f98f1affe028f8153a459d15f220ada3826b5aa2"
+            "ref": "da713d006953b90d1c085c1be480ecdd6c4a95e0"
         },
         "files": [
             "config/packages/doctrine.yaml",
-            "config/packages/prod/doctrine.yaml",
-            "config/packages/test/doctrine.yaml",
             "src/Entity/.gitignore",
             "src/Repository/.gitignore"
         ]
@@ -73,9 +69,9 @@
         "version": "3.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "3.1",
-            "ref": "ee609429c9ee23e22d6fa5728211768f51ed2818"
+            "ref": "1d01ec03c6ecbd67c3375c5478c9a423ae5d6a33"
         },
         "files": [
             "config/packages/doctrine_migrations.yaml",
@@ -304,12 +300,12 @@
         "version": "v5.4.3"
     },
     "symfony/flex": {
-        "version": "1.18",
+        "version": "2.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "1.0",
-            "ref": "c0eeb50665f0f77226616b6038a9b06c03752d8e"
+            "ref": "146251ae39e06a95be0fe3d13c807bcf3938b172"
         },
         "files": [
             ".env"
@@ -407,12 +403,12 @@
         "version": "v5.4.3"
     },
     "symfony/routing": {
-        "version": "5.4",
+        "version": "6.0",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "5.3",
-            "ref": "44633353926a0382d7dfb0530922c5c0b30fae11"
+            "branch": "main",
+            "version": "6.0",
+            "ref": "eb3b377a4dc07006c4bdb2c773652cc9434f5246"
         },
         "files": [
             "config/packages/routing.yaml",
