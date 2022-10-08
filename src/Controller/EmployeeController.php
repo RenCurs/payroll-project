@@ -7,10 +7,10 @@ use App\Service\EmployeeService;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -52,7 +52,6 @@ class EmployeeController extends AbstractController
      */
     public function getEmployeesList(): Response
     {
-        $employees  = $this->service->findAll();
         $response = $this->serializer->serialize(
             $this->service->findAll(),
             'json',
@@ -65,5 +64,29 @@ class EmployeeController extends AbstractController
         );
 
         return new JsonResponse($response, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @Route("/employees/update", name="update_employee", methods={"POST"})
+     */
+    public function updateEmployee(Request $request, SerializerInterface $serializer): Response
+    {
+        $employee = $serializer->deserialize($request->getContent(), Employee::class, 'json');
+
+        return new JsonResponse(
+            $this->serializer->serialize(
+                $employee,
+                'json',
+                [
+                    'groups' => ['account'],
+                    AbstractNormalizer::CALLBACKS => [
+                        'dateBirth' => fn (DateTime $innerObject) => $innerObject->format('Y-m-d')
+                    ],
+                ]
+            ),
+            Response::HTTP_OK,
+            [],
+            true
+        );
     }
 }

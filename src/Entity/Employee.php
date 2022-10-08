@@ -12,6 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=EmployeeRepository::class)
+ *
+ * TODO Поправить типы для св-в и методов
  */
 class Employee
 {
@@ -100,12 +102,14 @@ class Employee
      *
      * @Groups({"account"})
      */
-    private $payCheck;
+    private ?PayCheck $payCheck;
 
     /**
      * @ORM\OneToMany(targetEntity=ServicesCharge::class, mappedBy="employee")
+     *
+     * @var Collection<ServicesCharge>
      */
-    private $servicesCharges;
+    private Collection $servicesCharges;
 
     /**
      * @ORM\OneToMany(targetEntity=TimeCard::class, mappedBy="employee", orphanRemoval=true)
@@ -180,7 +184,7 @@ class Employee
         return $this->dateBirth;
     }
 
-    public function setDateBirth(DateTimeInterface $dateBirth): self
+    public function setDateBirth(DateTime $dateBirth): self
     {
         $this->dateBirth = $dateBirth;
 
@@ -216,7 +220,7 @@ class Employee
         return $this->salary;
     }
 
-    public function setSalary(float $salary): self
+    public function setSalary(?float $salary): self
     {
         $this->salary = $salary;
 
@@ -228,7 +232,7 @@ class Employee
         return $this->hourTariff;
     }
 
-    public function setHourTariff(float $hourTariff): self
+    public function setHourTariff(?float $hourTariff): self
     {
         $this->hourTariff = $hourTariff;
 
@@ -240,16 +244,13 @@ class Employee
         return $this->commissionRate;
     }
 
-    public function setCommissionRate(float $commissionRate): self
+    public function setCommissionRate(?float $commissionRate): self
     {
         $this->commissionRate = $commissionRate;
 
         return $this;
     }
 
-    /**
-     * @return Collection|UnionContribution[]
-     */
     public function getUnionContribution(): Collection
     {
         return $this->unionContribution;
@@ -281,7 +282,7 @@ class Employee
 
     public function getPayCheck(): ?PayCheck
     {
-        return $this->payCheck;
+        return $this->payCheck ?? null;
     }
 
     public function setPayCheck(PayCheck $payCheck): self

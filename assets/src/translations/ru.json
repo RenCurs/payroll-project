@@ -7,12 +7,8 @@
       "fio": "ФИО",
       "dateBirth": "Дата рождения",
       "salaryType": "Тип выплаты",
-      "scheduleSalary": "График выплат"
-    },
-    "actions": {
-      "title": "Действия",
-      "edit": "Редактировать",
-      "delete": "Удалить"
+      "scheduleSalary": "График выплат",
+      "unionAffiliation": "Член профсоюза"
     },
     "edit": "Редактирование сотрудника"
   },
@@ -28,5 +24,11 @@
     "job_price": "Сдельная (%)"
   },
   "currentUser": "Пользователь: ",
-  "loadingButton": "Загрузка..."
+  "choose": "Выберите",
+  "actions": {
+    "title": "Действия",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "save": "Сохранить"
+  }
 }

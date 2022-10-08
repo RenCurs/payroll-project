@@ -22,7 +22,7 @@
                 ></button>
             </div>
             <div class="mb-3">
-                <label for="inputFio" class="form-label">ФИО</label>
+                <label for="inputFio" class="form-label">{{ $t('employee.fields.fio') }}</label>
                 <input
                     v-model="currentEmployee.fio"
                     type="text"
@@ -30,8 +30,7 @@
                     id="inputFio"/>
             </div>
             <div class="mb-3">
-                <label for="dateBirth" class="form-label">Дата рождения</label>
-                <!--                            TODO вынести даты-->
+                <label for="dateBirth" class="form-label">{{ $t('employee.fields.dateBirth') }}</label>
                 <input
                     v-model="currentEmployee.dateBirth"
                     type="date"
@@ -42,7 +41,7 @@
                 >
             </div>
             <div class="mb-3">
-                <label for="salaryType" class="form-label">Тип оплаты</label>
+                <label for="salaryType" class="form-label">{{ $t('employee.fields.salaryType') }}</label>
                 <select
                     v-model="currentEmployee.salaryType" id="salaryType"
                     class="form-select"
@@ -58,13 +57,13 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="salaryType" class="form-label">Схема оплаты</label>
+                <label for="salaryType" class="form-label">{{ $t('employee.fields.scheduleSalary') }}</label>
                 <select
                     v-model="currentEmployee.paymentSchedule"
                     id="salaryType"
                     class="form-select"
                 >
-                    <option disabled value="">Выберите</option>
+                    <option disabled value="">{{ $t('choose') }}</option>
                     <option
                         v-for="(code, i) of paymentSchedules()"
                         :key="i"
@@ -75,19 +74,19 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="salary" class="form-label">Оклад</label>
-                <input v-model="currentEmployee.salary" type="text" class="form-control" id="salary">
+                <label for="salary" class="form-label">{{ $t('salaryType.fixed') }}</label>
+                <input v-model.number="currentEmployee.salary" type="number" class="form-control" id="salary">
             </div>
             <div class="mb-3">
-                <label for="hourTariff" class="form-label">Часовая ставка</label>
-                <input v-model="currentEmployee.hourTariff" type="text" class="form-control" id="hourTariff">
+                <label for="hourTariff" class="form-label">{{ $t('salaryType.hourly') }}</label>
+                <input v-model.number="currentEmployee.hourTariff" type="text" class="form-control" id="hourTariff">
             </div>
             <div class="mb-3">
-                <label for="percent" class="form-label">Процент комиссии</label>
-                <input v-model="currentEmployee.commissionRate" type="text" class="form-control" id="percent">
+                <label for="hourTariff" class="form-label">{{ $t('salaryType.job_price') }}</label>
+                <input v-model.number="currentEmployee.commissionRate" type="text" class="form-control" id="percent">
             </div>
             <div class="form-check">
-                <label class="form-check-label" for="unionAffiliation">Член профсоюза</label>
+                <label class="form-check-label" for="unionAffiliation">{{ $t('employee.fields.unionAffiliation') }}</label>
                 <input v-model="currentEmployee.isUnionAffiliation" type="checkbox" class="form-check-input" id="unionAffiliation">
             </div>
 
@@ -96,7 +95,7 @@
                 class="mt-3 btn btn-secondary"
                 @click="changeEmployee"
             >
-                Сохранить
+                {{ $t('actions.save') }}
             </button>
         </div>
     </div>
@@ -106,7 +105,7 @@
 import { Prop, Vue, Watch } from 'vue-property-decorator';
 import Employee from '@/types/Employee';
 import Component from 'vue-class-component';
-import { getEmptyEmployee, validateEmployee } from '@/helpers';
+import { getEmptyEmployee, validateEmployee, clearedEmptyFieldsEmployees } from '@/helpers';
 
 @Component
 export default class EmployeeView extends Vue {
@@ -136,7 +135,7 @@ export default class EmployeeView extends Vue {
             return
         }
 
-        this.$emit(this.CHANGE_EMPLOYEE_EVENT, this.currentEmployee)
+        this.$emit(this.CHANGE_EMPLOYEE_EVENT, clearedEmptyFieldsEmployees(this.currentEmployee))
     }
 
     private clearErrors(fieldName: string) {

@@ -25,4 +25,13 @@ export default class EmployeeService {
 
         return response.data
     }
+
+    public async updateEmployee(employee: Employee): Promise<Employee> {
+        const response = await this.apiClient.post<Employee, Employee>(
+            router.generate('api_update_employee'),
+            employee
+        )
+
+        return response.data
+    }
 }

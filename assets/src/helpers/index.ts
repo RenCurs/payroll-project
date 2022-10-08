@@ -58,7 +58,7 @@ function validateBirthDate(dateBirth: string): Array<string> {
     const errors: string[] = []
 
     if (!dateBirth) {
-        errors.push('Must not be empty')
+        errors.push('Birth date must not be empty')
     }
 
     return errors
@@ -88,4 +88,12 @@ function baseValidate(employee: Employee): Array<string> {
     return errors
 }
 
-export { getEmptyEmployee, validateEmployee }
+function clearedEmptyFieldsEmployees(employee: Employee): Employee {
+    const objProps = Object.entries(employee).filter(
+        (propsData: [string, unknown]) => propsData[1] !== null && propsData[1] !== undefined
+    )
+
+    return <Employee>Object.fromEntries(objProps)
+}
+
+export { getEmptyEmployee, validateEmployee, clearedEmptyFieldsEmployees }
