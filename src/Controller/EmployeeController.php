@@ -13,23 +13,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
-/**
- *  @Route("/api", name="api_")
- */
+#[Route("/api", name: "api_")]
 class EmployeeController extends AbstractController
 {
-    private EmployeeService $service;
-    private SerializerInterface $serializer;
+    public function __construct(
+        private readonly EmployeeService $service,
+        private readonly SerializerInterface $serializer
+    ) {}
 
-    public function __construct(EmployeeService $service, SerializerInterface $serializer)
-    {
-        $this->service = $service;
-        $this->serializer = $serializer;
-    }
-
-    /**
-     * @Route("/employees/{id}", name="get_employee", methods={"GET"})
-     */
+    #[Route("/employees/{id}", name: "get_employee", methods: ["GET"])]
     public function getEmployeeBydId(int $id): Response
     {
         $response = $this->serializer->serialize(
@@ -47,9 +39,7 @@ class EmployeeController extends AbstractController
         return new JsonResponse($response, Response::HTTP_OK, [], true);
     }
 
-    /**
-     * @Route("/employees", name="get_employees_list", methods={"GET"})
-     */
+    #[Route("/employees", name: "get_employees_list", methods: ["GET"])]
     public function getEmployeesList(): Response
     {
         $response = $this->serializer->serialize(
@@ -66,9 +56,7 @@ class EmployeeController extends AbstractController
         return new JsonResponse($response, Response::HTTP_OK, [], true);
     }
 
-    /**
-     * @Route("/employees/update", name="update_employee", methods={"POST"})
-     */
+    #[Route("/employees/update", name: "update_employee", methods: ["POST"])]
     public function updateEmployee(Request $request, SerializerInterface $serializer): Response
     {
         $employee = $serializer->deserialize($request->getContent(), Employee::class, 'json');

@@ -217,10 +217,10 @@ class Employee
 
     public function getSalary(): ?float
     {
-        return $this->salary;
+        return $this->salary ?? null;
     }
 
-    public function setSalary(?float $salary): self
+    public function setSalary(float $salary): self
     {
         $this->salary = $salary;
 
@@ -229,10 +229,10 @@ class Employee
 
     public function getHourTariff(): ?float
     {
-        return $this->hourTariff;
+        return $this->hourTariff ?? null;
     }
 
-    public function setHourTariff(?float $hourTariff): self
+    public function setHourTariff(float $hourTariff): self
     {
         $this->hourTariff = $hourTariff;
 
@@ -241,10 +241,10 @@ class Employee
 
     public function getCommissionRate(): ?float
     {
-        return $this->commissionRate;
+        return $this->commissionRate ?? null;
     }
 
-    public function setCommissionRate(?float $commissionRate): self
+    public function setCommissionRate(float $commissionRate): self
     {
         $this->commissionRate = $commissionRate;
 
@@ -387,7 +387,7 @@ class Employee
 
     public function getLastPayDate(): ?DateTime
     {
-        return $this->lastPayDate;
+        return $this->lastPayDate ?? null;
     }
 
     public function setLastPayDate(DateTime $lastPayDate): self

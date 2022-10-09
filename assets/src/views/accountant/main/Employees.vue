@@ -9,7 +9,7 @@
                         <th scope="col">{{ $t('employee.fields.dateBirth') }}</th>
                         <th scope="col">{{ $t('employee.fields.salaryType') }}</th>
                         <th scope="col">{{ $t('employee.fields.scheduleSalary') }}</th>
-                        <th scope="col">{{ $t('employee.actions.title') }}</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,7 +31,7 @@
                                     class="btn btn-outline-info"
                                     @click="$router.push({ name: 'edit_employee', params: { employeeId: String(employee.id) }})"
                                 >
-                                    {{ $t('employee.actions.edit') }}
+                                    {{ $t('actions.edit') }}
                                 </button>
                                 <button
                                     type="button"
@@ -40,7 +40,7 @@
                                     data-bs-target="#removeModal"
                                     @click="initRemoveEmployee(employee)"
                                 >
-                                    {{ $t('employee.actions.delete') }}
+                                    {{ $t('actions.delete') }}
                                 </button>
                             </div>
                         </td>
