@@ -19,17 +19,14 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
     private const NORMAL = 8;
     private const OVER_TIME_MULTIPLE_RATE = 2;
 
-    private TimeCardRepository $timeCardRepository;
-
     public function __construct(
         DateTime $payDate,
         Employee $employee,
-        TimeCardRepository $timeCardRepository,
+        private readonly TimeCardRepository $timeCardRepository,
         ServicesChargeRepository $chargeRepository,
         UnionContributionRepository $contributionRepository
     ) {
         parent::__construct($payDate, $employee, $chargeRepository, $contributionRepository);
-        $this->timeCardRepository = $timeCardRepository;
     }
 
     protected function calculateSalary(): float {
@@ -47,7 +44,7 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
 
             try {
                 $this->validatePrimarySpentTime($timeSpentDto);
-            } catch (NotFullyWorkingHours $exception) {
+            } catch (NotFullyWorkingHours) {
                 // todo log
                 $primarySalary = $this->calculatePrimaryTimeByOverTime($timeSpentDto);
                 $overTimeSalary = $this->calculateOverTime($timeSpentDto);
@@ -152,9 +149,6 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
         }
     }
 
-    /**
-     * @return array
-     */
     protected function getUnionContributions(): array
     {
         $payDate = clone $this->payDate;
@@ -165,9 +159,6 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
         return $this->contributionRepository->getByPeriod($startDate, $endDate);
     }
 
-    /**
-     * @return array
-     */
     protected function getServicesCharges(): array
     {
         $startDate = (clone $this->payDate)->sub(new DateInterval('P4D'));

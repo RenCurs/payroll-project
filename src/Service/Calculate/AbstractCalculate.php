@@ -12,21 +12,8 @@ use DateTime;
 
 abstract class AbstractCalculate
 {
-    protected DateTime $payDate;
-    protected Employee $employee;
-    protected ServicesChargeRepository $chargeRepository;
-    protected UnionContributionRepository $contributionRepository;
-
-    public function __construct(
-        DateTime $payDate,
-        Employee $employee,
-        ServicesChargeRepository $chargeRepository,
-        UnionContributionRepository $contributionRepository
-    ) {
-        $this->payDate = $payDate;
-        $this->employee = $employee;
-        $this->chargeRepository = $chargeRepository;
-        $this->contributionRepository = $contributionRepository;
+    public function __construct(protected DateTime $payDate, protected Employee $employee, protected ServicesChargeRepository $chargeRepository, protected UnionContributionRepository $contributionRepository)
+    {
     }
 
     abstract protected function calculateSalary(): float;

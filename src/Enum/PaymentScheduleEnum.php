@@ -4,7 +4,7 @@ namespace App\Enum;
 
 class PaymentScheduleEnum
 {
-    public const BIWEEKLY = 'biweekly';
-    public const MONTHLY = 'monthly';
-    public const WEEKLY = 'weekly';
+    final public const BIWEEKLY = 'biweekly';
+    final public const MONTHLY = 'monthly';
+    final public const WEEKLY = 'weekly';
 }

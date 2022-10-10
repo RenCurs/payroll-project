@@ -13,18 +13,14 @@ use DateTime;
 
 class JobpriceSalaryCalculate extends AbstractCalculate implements PaymentCalculate
 {
-    private SaleReceiptRepository $receiptRepository;
-
     public function __construct(
         DateTime $payDate,
         Employee $employee,
-        SaleReceiptRepository $receiptRepository,
+        private readonly SaleReceiptRepository $receiptRepository,
         ServicesChargeRepository $chargeRepository,
         UnionContributionRepository $contributionRepository
     ) {
         parent::__construct($payDate, $employee, $chargeRepository, $contributionRepository);
-
-        $this->receiptRepository = $receiptRepository;
     }
 
     protected function calculateSalary(): float
@@ -52,9 +48,6 @@ class JobpriceSalaryCalculate extends AbstractCalculate implements PaymentCalcul
         return $sum;
     }
 
-    /**
-     * @return array
-     */
     protected function getUnionContributions(): array
     {
         $endDate = clone $this->payDate;
@@ -64,9 +57,6 @@ class JobpriceSalaryCalculate extends AbstractCalculate implements PaymentCalcul
         return $this->contributionRepository->getByPeriod($this->employee, $startDate, $endDate);
     }
 
-    /**
-     * @return array
-     */
     protected function getServicesCharges(): array
     {
         $endDate = clone $this->payDate;

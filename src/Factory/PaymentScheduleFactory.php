@@ -13,24 +13,12 @@ class PaymentScheduleFactory
 {
     public function create(Employee $employee): PaymentSchedule
     {
-        switch ($employee->getPaymentSchedule()) {
-            case PaymentScheduleEnum::MONTHLY:
-                $schedule = new MonthlyPaymentSchedule();
-
-                break;
-
-            case PaymentScheduleEnum::WEEKLY:
-                $schedule = new WeeklyPaymentSchedule();
-
-                break;
-
-            case PaymentScheduleEnum::BIWEEKLY:
-                $schedule = new BiweeklyPaymentSchedule();
-
-                break;
-            default:
-                throw new InvalidArgumentException('Неизвестный график оплаты');
-        }
+        $schedule = match ($employee->getPaymentSchedule()) {
+            PaymentScheduleEnum::MONTHLY => new MonthlyPaymentSchedule(),
+            PaymentScheduleEnum::WEEKLY => new WeeklyPaymentSchedule(),
+            PaymentScheduleEnum::BIWEEKLY => new BiweeklyPaymentSchedule(),
+            default => throw new InvalidArgumentException('Неизвестный график оплаты'),
+        };
 
         return $schedule;
     }

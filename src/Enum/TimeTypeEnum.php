@@ -8,8 +8,8 @@ namespace App\Enum;
 class TimeTypeEnum
 {
     /** @var string Рабочее время */
-    public const PRIMARY = 'primary';
+    final public const PRIMARY = 'primary';
 
     /** @var string Сверхурочное */
-    public const OVER_TIME = 'overtime';
+    final public const OVER_TIME = 'overtime';
 }

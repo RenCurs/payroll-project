@@ -2,18 +2,19 @@
 
 namespace App\Service;
 
+use App\Component\ErrorHelper;
 use App\Entity\Employee;
+use App\Exception\ValidationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EmployeeService
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator)
-    {
-        $this->entityManager = $entityManager;
-    }
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ValidatorInterface $validator,
+        private readonly ErrorHelper $errorHelper,
+    ) {}
 
     /**
      * @return Employee[]
@@ -28,9 +29,32 @@ class EmployeeService
         return $this->entityManager->getRepository(Employee::class)->find($id);
     }
 
-    public function createOrUpdate(Employee $employee, ?int $id): Employee
+    /**
+     * @throws ValidationException
+     */
+    public function createOrUpdate(Employee $employee, ?int $id = null): Employee
     {
-        // TODO Add validaton
-        // TODO Save and update
+        $errors = $this->validator->validate($employee);
+
+        if (count($errors) > 0) {
+            throw new ValidationException($this->errorHelper->getValidationErrors($errors));
+        }
+
+        if (null !== $id) {
+            $existEmployee = $this->findById($id);
+            $existEmployee
+                ->setAddress($employee->getAddress())
+                ->setFio($employee->getFio())
+                ->setDateBirth($employee->getDateBirth())
+                ->setSalaryType($employee->getSalaryType())
+                ->setPaymentSchedule($employee->getPaymentSchedule());
+        } else {
+            $existEmployee = $employee;
+            $this->entityManager->persist($existEmployee);
+        }
+
+        $this->entityManager->flush();
+
+        return $existEmployee;
     }
 }

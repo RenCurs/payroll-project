@@ -6,36 +6,24 @@ use App\Repository\ServicesChargeRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=ServicesChargeRepository::class)
- */
+#[ORM\Entity(repositoryClass: ServicesChargeRepository::class)]
 class ServicesCharge
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
+    #[ORM\Column(type: 'string', length: 100)]
     private string $name;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private float $cost = 0;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     private DateTimeInterface $date;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="servicesCharges")
-     */
+    #[ORM\ManyToOne(targetEntity: Employee::class, inversedBy: 'servicesCharges')]
     private Employee $employee;
 
     public function getId(): ?int

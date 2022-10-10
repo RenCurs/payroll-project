@@ -5,32 +5,22 @@ namespace App\Entity;
 use App\Repository\SaleReceiptRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=SaleReceiptRepository::class)
- */
+#[ORM\Entity(repositoryClass: SaleReceiptRepository::class)]
 class SaleReceipt
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     private $date;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $amount;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="saleReceipts")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Employee::class, inversedBy: 'saleReceipts')]
+    #[ORM\JoinColumn(nullable: false)]
     private $employee;
 
     public function getId(): ?int

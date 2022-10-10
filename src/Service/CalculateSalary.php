@@ -14,25 +14,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CalculateSalary
 {
-    private EmployeeRepository $employeeRepository;
-    private PaymentScheduleFactory $scheduleFactory;
-    private PaymentCalculateFactory $calculateFactory;
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(
-        EmployeeRepository $employeeRepository,
-        PaymentScheduleFactory $scheduleFactory,
-        PaymentCalculateFactory $calculateFactory,
-        EntityManagerInterface $entityManager
-    ) {
-        $this->employeeRepository = $employeeRepository;
-        $this->scheduleFactory = $scheduleFactory;
-        $this->calculateFactory = $calculateFactory;
-        $this->entityManager = $entityManager;
+    public function __construct(private readonly EmployeeRepository $employeeRepository, private readonly PaymentScheduleFactory $scheduleFactory, private readonly PaymentCalculateFactory $calculateFactory, private readonly EntityManagerInterface $entityManager)
+    {
     }
 
     public function execute(DateTime $date): void
     {
+        // TODO Добавить получение порциями
         $employees = $this->employeeRepository->findAll();
 
         foreach ($employees as $employee) {

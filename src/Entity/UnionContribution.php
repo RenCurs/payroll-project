@@ -6,38 +6,25 @@ use App\Repository\UnionContributionRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-// TODO Проверить сущность, для чего нужны даты начало и окончания?
-/**
- * @ORM\Entity(repositoryClass=UnionContributionRepository::class)
- */
+#[ORM\Entity(repositoryClass: UnionContributionRepository::class)]
 class UnionContribution
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private ?int $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private readonly ?int $id;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private float $sum;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="unionContribution", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Employee::class, inversedBy: 'unionContribution', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private Employee $employee;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     private $dateStart;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     private $dateEnd;
 
     public function getId(): ?int

@@ -17,15 +17,9 @@ class CalculateSalaryCommand extends Command
     protected static $defaultName = 'app:calculate-salary';
     protected static $defaultDescription = 'Calculate salary for employee';
 
-    private CalculateSalary $calculateSalary;
-    private LoggerInterface $logger;
-
-    public function __construct(CalculateSalary $calculateSalary, LoggerInterface $logger)
+    public function __construct(private readonly CalculateSalary $calculateSalary, private readonly LoggerInterface $logger)
     {
         parent::__construct();
-
-        $this->calculateSalary = $calculateSalary;
-        $this->logger = $logger;
     }
 
     protected function configure(): void

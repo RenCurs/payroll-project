@@ -6,47 +6,31 @@ use App\Repository\PayCheckRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=PayCheckRepository::class)
- */
+#[ORM\Entity(repositoryClass: PayCheckRepository::class)]
 class PayCheck
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private ?int $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private readonly ?int $id;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private float $sum;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private float $unionContribution;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private float $servicesCharge;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private float $totalSum;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Employee::class, inversedBy="payCheck", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: Employee::class, inversedBy: 'payCheck', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private Employee $employee;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     private DateTimeInterface $date;
 
     public function getId(): ?int

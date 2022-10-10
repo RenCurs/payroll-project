@@ -11,9 +11,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class EmployeeFixture extends Fixture
 {
-    public const TEST_USER = 'test_user';
-    public const EMP_HOURLY = 'emp_hourly';
-    public const EMP_JOBPRICE = 'emp_jobprice';
+    final public const TEST_USER = 'test_user';
+    final public const EMP_HOURLY = 'emp_hourly';
+    final public const EMP_JOBPRICE = 'emp_jobprice';
 
     public function load(ObjectManager $manager): void
     {

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Employee;
+use App\Exception\ValidationException;
 use App\Service\EmployeeService;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +19,7 @@ class EmployeeController extends AbstractController
 {
     public function __construct(
         private readonly EmployeeService $service,
-        private readonly SerializerInterface $serializer
+        private readonly SerializerInterface $serializer,
     ) {}
 
     #[Route("/employees/{id}", name: "get_employee", methods: ["GET"])]
@@ -56,25 +57,58 @@ class EmployeeController extends AbstractController
         return new JsonResponse($response, Response::HTTP_OK, [], true);
     }
 
-    #[Route("/employees/update", name: "update_employee", methods: ["POST"])]
-    public function updateEmployee(Request $request, SerializerInterface $serializer): Response
+    /**
+     * @throws ValidationException
+     */
+    #[Route(
+        "/employees/update/{employeeId}",
+        name: "update_employee",
+        requirements: ["employeeId" => "\d+"],
+        methods: ["PUT"]
+    )]
+    public function updateEmployee(Request $request, int $employeeId): Response
     {
-        $employee = $serializer->deserialize($request->getContent(), Employee::class, 'json');
+        $employee = $this->serializer->deserialize($request->getContent(), Employee::class, 'json');
+        $updatedEmployee = $this->service->createOrUpdate($employee, $employeeId);
 
-        return new JsonResponse(
-            $this->serializer->serialize(
-                $employee,
-                'json',
-                [
-                    'groups' => ['account'],
-                    AbstractNormalizer::CALLBACKS => [
-                        'dateBirth' => fn (DateTime $innerObject) => $innerObject->format('Y-m-d')
-                    ],
+        $response = $this->serializer->serialize(
+            $updatedEmployee,
+            'json',
+            [
+                'groups' => ['account'],
+                AbstractNormalizer::CALLBACKS => [
+                    'dateBirth' => fn(DateTime $innerObject) => $innerObject->format('Y-m-d')
                 ]
-            ),
-            Response::HTTP_OK,
-            [],
-            true
+            ]
         );
+
+        return new JsonResponse($response, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    #[Route(
+        "/employees/create",
+        name: "create_employee",
+        methods: ["POST"]
+    )]
+    public function createEmployee(Request $request): Response
+    {
+        $employee = $this->serializer->deserialize($request->getContent(), Employee::class, 'json');
+        $updatedEmployee = $this->service->createOrUpdate($employee);
+
+        $response = $this->serializer->serialize(
+            $updatedEmployee,
+            'json',
+            [
+                'groups' => ['account'],
+                AbstractNormalizer::CALLBACKS => [
+                    'dateBirth' => fn(DateTime $innerObject) => $innerObject->format('Y-m-d')
+                ]
+            ]
+        );
+
+        return new JsonResponse($response, Response::HTTP_CREATED, [], true);
     }
 }

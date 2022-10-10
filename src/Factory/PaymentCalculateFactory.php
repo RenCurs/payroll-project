@@ -18,60 +18,37 @@ use InvalidArgumentException;
 
 class PaymentCalculateFactory
 {
-    private TimeCardRepository $timeCardRepository;
-    private SaleReceiptRepository $receiptRepository;
-    private ServicesChargeRepository $chargeRepository;
-    private UnionContributionRepository $contributionRepository;
-
-    public function __construct(
-        TimeCardRepository $timeCardRepository,
-        SaleReceiptRepository $receiptRepository,
-        ServicesChargeRepository $chargeRepository,
-        UnionContributionRepository $contributionRepository
-    ) {
-        $this->timeCardRepository = $timeCardRepository;
-        $this->receiptRepository = $receiptRepository;
-        $this->chargeRepository = $chargeRepository;
-        $this->contributionRepository = $contributionRepository;
+    public function __construct(private readonly TimeCardRepository $timeCardRepository, private readonly SaleReceiptRepository $receiptRepository, private readonly ServicesChargeRepository $chargeRepository, private readonly UnionContributionRepository $contributionRepository)
+    {
     }
 
     public function create(DateTime $dateTime, Employee $employee): PaymentCalculate
     {
         $payDate = clone $dateTime;
 
-        switch ($employee->getSalaryType()) {
-            case PaymentTypeEnum::FIXED:
-                $calculate = new FixedSalaryCalculate(
-                    $payDate,
-                    $employee,
-                    $this->chargeRepository,
-                    $this->contributionRepository
-                );
-
-                break;
-            case PaymentTypeEnum::HOURLY:
-                $calculate = new HourlySalaryCalculate(
-                    $payDate,
-                    $employee,
-                    $this->timeCardRepository,
-                    $this->chargeRepository,
-                    $this->contributionRepository
-                );
-
-                break;
-            case PaymentTypeEnum::JOBPRICE:
-                $calculate = new JobpriceSalaryCalculate(
-                    $payDate,
-                    $employee,
-                    $this->receiptRepository,
-                    $this->chargeRepository,
-                    $this->contributionRepository
-                );
-
-                break;
-            default:
-                throw new InvalidArgumentException('Неизвестный тип оплаты для работника');
-        }
+        $calculate = match ($employee->getSalaryType()) {
+            PaymentTypeEnum::FIXED => new FixedSalaryCalculate(
+                $payDate,
+                $employee,
+                $this->chargeRepository,
+                $this->contributionRepository
+            ),
+            PaymentTypeEnum::HOURLY => new HourlySalaryCalculate(
+                $payDate,
+                $employee,
+                $this->timeCardRepository,
+                $this->chargeRepository,
+                $this->contributionRepository
+            ),
+            PaymentTypeEnum::JOBPRICE => new JobpriceSalaryCalculate(
+                $payDate,
+                $employee,
+                $this->receiptRepository,
+                $this->chargeRepository,
+                $this->contributionRepository
+            ),
+            default => throw new InvalidArgumentException('Неизвестный тип оплаты для работника'),
+        };
 
         return $calculate;
     }

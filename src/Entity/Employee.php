@@ -3,132 +3,93 @@
 namespace App\Entity;
 
 use App\Repository\EmployeeRepository;
+use App\Validator\PaymentTypeConstraint;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use SalaryConstraint;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=EmployeeRepository::class)
- *
  * TODO Поправить типы для св-в и методов
  */
+#[ORM\Entity(repositoryClass: EmployeeRepository::class)]
+#[SalaryConstraint]
+#[PaymentTypeConstraint]
 class Employee
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     *
-     * @Groups({"account"})
-     *
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['account'])]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Groups({"account"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['account'])]
+    #[Assert\NotBlank]
     private string $fio;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Groups({"account"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['account'])]
+    #[Assert\NotBlank]
     private string $address;
 
-    /**
-     * @ORM\Column(type="datetime")
-     *
-     * @Groups({"account"})
-     */
-    private DateTime $dateBirth;
+    #[ORM\Column(type: 'datetime')]
+    #[Groups(['account'])]
+    #[Assert\NotBlank]
+    #[Assert\Type(DateTimeInterface::class)]
+    private DateTimeInterface $dateBirth;
 
-    /**
-     * @ORM\Column(type="string", length=50)
-     *
-     * @Groups({"account"})
-     */
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Groups(['account'])]
+    #[Assert\NotBlank]
     private string $salaryType;
 
-    /**
-     * @ORM\Column(type="string", length=50)
-     *
-     * @Groups({"account"})
-     */
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Groups(['account'])]
+    #[Assert\NotBlank]
     private string $paymentSchedule;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     *
-     * @Groups({"account"})
-     */
-    private ?float $salary;
+    #[ORM\Column(type: 'float', nullable: true)]
+    #[Groups(['account'])]
+    private ?float $salary = null;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     *
-     * @Groups({"account"})
-     */
-    private ?float $hourTariff;
+    #[ORM\Column(type: 'float', nullable: true)]
+    #[Groups(['account'])]
+    private ?float $hourTariff = null;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     *
-     * @Groups({"account"})
-     */
-    private ?float $commissionRate;
+    #[ORM\Column(type: 'float', nullable: true)]
+    #[Groups(['account'])]
+    private ?float $commissionRate = null;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": false})
-     *
-     * @Groups({"account"})
-     */
-    private bool $isUnionAffiliation;
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[Groups(['account'])]
+    private bool $isUnionAffiliation = false;
 
-    /**
-     * @ORM\OneToMany(targetEntity=UnionContribution::class, mappedBy="employee", cascade={"persist", "remove"})
-     *
-     * @Groups({"account"})
-     */
-    private $unionContribution;
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: UnionContribution::class, cascade: ['persist', 'remove'])]
+    #[Groups(['account'])]
+    private Collection $unionContribution;
 
-    /**
-     * @ORM\OneToOne(targetEntity=PayCheck::class, mappedBy="employee", cascade={"persist", "remove"})
-     *
-     * @Groups({"account"})
-     */
-    private ?PayCheck $payCheck;
+    #[ORM\OneToOne(mappedBy: 'employee', targetEntity: PayCheck::class, cascade: ['persist', 'remove'])]
+    #[Groups(['account'])]
+    private ?PayCheck $payCheck = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ServicesCharge::class, mappedBy="employee")
-     *
-     * @var Collection<ServicesCharge>
-     */
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: ServicesCharge::class)]
     private Collection $servicesCharges;
 
-    /**
-     * @ORM\OneToMany(targetEntity=TimeCard::class, mappedBy="employee", orphanRemoval=true)
-     *
-     * @Groups({"account"})
-     */
-    private $timeCards;
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: TimeCard::class, orphanRemoval: true)]
+    #[Groups(['account'])]
+    private Collection $timeCards;
 
-    /**
-     * @ORM\OneToMany(targetEntity=SaleReceipt::class, mappedBy="employee", orphanRemoval=true)
-     *
-     * @Groups({"account"})
-     */
-    private $saleReceipts;
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: SaleReceipt::class, orphanRemoval: true)]
+    #[Groups(['account'])]
+    private Collection $saleReceipts;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private DateTime $lastPayDate;
+    #[ORM\Column(type: 'date', nullable: true)]
+    private ?DateTimeInterface $lastPayDate = null;
 
     public function __construct()
     {
@@ -143,7 +104,7 @@ class Employee
         return $this->id;
     }
 
-    public function getFio(): ?string
+    public function getFio(): string
     {
         return $this->fio;
     }
@@ -155,7 +116,7 @@ class Employee
         return $this;
     }
 
-    public function getSalaryType(): ?string
+    public function getSalaryType(): string
     {
         return $this->salaryType;
     }
@@ -167,7 +128,7 @@ class Employee
         return $this;
     }
 
-    public function getAddress(): ?string
+    public function getAddress(): string
     {
         return $this->address;
     }
@@ -179,12 +140,12 @@ class Employee
         return $this;
     }
 
-    public function getDateBirth(): ?DateTimeInterface
+    public function getDateBirth(): DateTimeInterface
     {
         return $this->dateBirth;
     }
 
-    public function setDateBirth(DateTime $dateBirth): self
+    public function setDateBirth(DateTimeInterface $dateBirth): self
     {
         $this->dateBirth = $dateBirth;
 
@@ -208,7 +169,7 @@ class Employee
         return $this->isUnionAffiliation;
     }
 
-    public function setIsUnionAffiliation(string $isUnionAffiliation): self
+    public function setIsUnionAffiliation(bool $isUnionAffiliation): self
     {
         $this->isUnionAffiliation = $isUnionAffiliation;
 
@@ -217,7 +178,7 @@ class Employee
 
     public function getSalary(): ?float
     {
-        return $this->salary ?? null;
+        return $this->salary;
     }
 
     public function setSalary(float $salary): self
@@ -229,7 +190,7 @@ class Employee
 
     public function getHourTariff(): ?float
     {
-        return $this->hourTariff ?? null;
+        return $this->hourTariff;
     }
 
     public function setHourTariff(float $hourTariff): self
@@ -241,7 +202,7 @@ class Employee
 
     public function getCommissionRate(): ?float
     {
-        return $this->commissionRate ?? null;
+        return $this->commissionRate;
     }
 
     public function setCommissionRate(float $commissionRate): self
@@ -282,7 +243,7 @@ class Employee
 
     public function getPayCheck(): ?PayCheck
     {
-        return $this->payCheck ?? null;
+        return $this->payCheck;
     }
 
     public function setPayCheck(PayCheck $payCheck): self
@@ -297,9 +258,6 @@ class Employee
         return $this;
     }
 
-    /**
-     * @return Collection|ServicesCharge[]
-     */
     public function getServicesCharges(): Collection
     {
         return $this->servicesCharges;
@@ -327,9 +285,6 @@ class Employee
         return $this;
     }
 
-    /**
-     * @return Collection|TimeCard[]
-     */
     public function getTimeCards(): Collection
     {
         return $this->timeCards;
@@ -355,9 +310,6 @@ class Employee
         return $this;
     }
 
-    /**
-     * @return Collection|SaleReceipt[]
-     */
     public function getSaleReceipts(): Collection
     {
         return $this->saleReceipts;
@@ -385,12 +337,12 @@ class Employee
         return $this;
     }
 
-    public function getLastPayDate(): ?DateTime
+    public function getLastPayDate(): ?DateTimeInterface
     {
-        return $this->lastPayDate ?? null;
+        return $this->lastPayDate;
     }
 
-    public function setLastPayDate(DateTime $lastPayDate): self
+    public function setLastPayDate(DateTimeInterface $lastPayDate): self
     {
         $this->lastPayDate = $lastPayDate;
 

@@ -6,37 +6,25 @@ use App\Repository\TimeCardRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=TimeCardRepository::class)
- */
+#[ORM\Entity(repositoryClass: TimeCardRepository::class)]
 class TimeCard
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private ?int $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private readonly ?int $id;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     private DateTime $date;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="timeCards")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Employee::class, inversedBy: 'timeCards')]
+    #[ORM\JoinColumn(nullable: false)]
     private Employee $employee;
 
-    /**
-     * @ORM\Column(type="integer", nullable="false")
-     */
+    #[ORM\Column(type: 'integer', nullable: false)]
     private int $spentHour;
 
-    /**
-     * @ORM\Column(type="string", nullable="false")
-     */
+    #[ORM\Column(type: 'string', length: 50, nullable: false)]
     private string $typeTime;
 
     public function getId(): ?int
