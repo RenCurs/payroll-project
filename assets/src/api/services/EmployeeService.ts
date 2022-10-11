@@ -27,8 +27,23 @@ export default class EmployeeService {
     }
 
     public async updateEmployee(employee: Employee): Promise<Employee> {
+        const response = await this.apiClient.patch<Employee, Employee>(
+            router.generate('api_update_employee', { employeeId: employee.id }),
+            employee
+        )
+
+        return response.data
+    }
+
+    public async deleteEmployee(employeeId: number): Promise<void> {
+        await this.apiClient.delete<unknown>(
+            router.generate('api_delete_employee', { employeeId })
+        )
+    }
+
+    public async createEmployee(employee: Employee): Promise<Employee> {
         const response = await this.apiClient.post<Employee, Employee>(
-            router.generate('api_update_employee'),
+            router.generate('api_create_employee'),
             employee
         )
 

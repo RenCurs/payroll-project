@@ -64,7 +64,7 @@ class EmployeeController extends AbstractController
         "/employees/update/{employeeId}",
         name: "update_employee",
         requirements: ["employeeId" => "\d+"],
-        methods: ["PUT"]
+        methods: ["PATCH"]
     )]
     public function updateEmployee(Request $request, int $employeeId): Response
     {
@@ -110,5 +110,19 @@ class EmployeeController extends AbstractController
         );
 
         return new JsonResponse($response, Response::HTTP_CREATED, [], true);
+    }
+
+
+    #[Route(
+        "/employees/delete/{employeeId}",
+        name: "delete_employee",
+        requirements: ["employeeId" => "\d+"],
+        methods: ["DELETE"])
+    ]
+    public function deleteEmployee(int $employeeId): Response
+    {
+        $this->service->delete($employeeId);
+
+        return $this->json('success');
     }
 }

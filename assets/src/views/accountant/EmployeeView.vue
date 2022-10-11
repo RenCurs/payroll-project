@@ -30,6 +30,16 @@
                     id="inputFio"/>
             </div>
             <div class="mb-3">
+                <label for="address" class="form-label">{{ $t('employee.fields.address.title') }}</label>
+                <input
+                    v-model="currentEmployee.address"
+                    type="text"
+                    class="form-control"
+                    id="address"
+                >
+            </div>
+
+            <div class="mb-3">
                 <label for="dateBirth" class="form-label">{{ $t('employee.fields.dateBirth') }}</label>
                 <input
                     v-model="currentEmployee.dateBirth"
@@ -48,41 +58,41 @@
                 >
                     <option disabled value="">Выберите</option>
                     <option
-                        v-for="(code, i) of salaryTypes()"
+                        v-for="(code, i) of paymentTypes"
                         :key="i"
                         :value="code"
                     >
-                        {{ code }}
+                        {{ $t(`paymentType.${code}`) }}
                     </option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="salaryType" class="form-label">{{ $t('employee.fields.scheduleSalary') }}</label>
+                <label for="paymentType" class="form-label">{{ $t('employee.fields.scheduleSalary') }}</label>
                 <select
                     v-model="currentEmployee.paymentSchedule"
-                    id="salaryType"
+                    id="paymentType"
                     class="form-select"
                 >
                     <option disabled value="">{{ $t('choose') }}</option>
                     <option
-                        v-for="(code, i) of paymentSchedules()"
+                        v-for="(code, i) of paymentSchedules"
                         :key="i"
                         :value="code"
                     >
-                        {{ code }}
+                        {{ $t(`paymentSchedule.${code}`) }}
                     </option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="salary" class="form-label">{{ $t('salaryType.fixed') }}</label>
+                <label for="salary" class="form-label">{{ $t('paymentType.fixed') }}</label>
                 <input v-model.number="currentEmployee.salary" type="number" class="form-control" id="salary">
             </div>
             <div class="mb-3">
-                <label for="hourTariff" class="form-label">{{ $t('salaryType.hourly') }}</label>
+                <label for="hourTariff" class="form-label">{{ $t('paymentType.hourly') }}</label>
                 <input v-model.number="currentEmployee.hourTariff" type="text" class="form-control" id="hourTariff">
             </div>
             <div class="mb-3">
-                <label for="hourTariff" class="form-label">{{ $t('salaryType.job_price') }}</label>
+                <label for="hourTariff" class="form-label">{{ $t('paymentType.job_price') }}</label>
                 <input v-model.number="currentEmployee.commissionRate" type="text" class="form-control" id="percent">
             </div>
             <div class="form-check">
@@ -91,6 +101,7 @@
             </div>
 
             <button
+                v-if="!onlyRead"
                 type="button"
                 class="mt-3 btn btn-secondary"
                 @click="changeEmployee"
@@ -106,15 +117,28 @@ import { Prop, Vue, Watch } from 'vue-property-decorator';
 import Employee from '@/types/Employee';
 import Component from 'vue-class-component';
 import { getEmptyEmployee, validateEmployee, clearedEmptyFieldsEmployees } from '@/helpers';
+import paymentSchedules from '@/dictionary/PaymentSchedules'
+import paymentTypes from '@/dictionary/PaymentTypes'
 
 @Component
 export default class EmployeeView extends Vue {
+    @Prop({ type: Boolean, default: false })
+    private onlyRead: boolean
+
     @Prop({ type: Object, default: () => ({}) })
     private employee: Employee
 
     private errorsValidation: {[key: string]: Array<string>} = {}
     private currentEmployee: Employee = getEmptyEmployee()
     private CHANGE_EMPLOYEE_EVENT = 'changeEmployeeEvent'
+
+    get paymentSchedules(): Array<string> {
+        return paymentSchedules
+    }
+
+    get paymentTypes(): Array<string> {
+        return paymentTypes
+    }
 
     @Watch('employee')
     updateEmployee() {
@@ -141,16 +165,6 @@ export default class EmployeeView extends Vue {
     private clearErrors(fieldName: string) {
         delete this.errorsValidation[fieldName]
         this.errorsValidation = { ...this.errorsValidation }
-    }
-
-    // TODO вынести
-    private salaryTypes(): Array<string> {
-        return ['fixed', 'jobprice', 'hourly']
-    }
-
-    // TODO вынести
-    private paymentSchedules(): Array<string> {
-        return ['monthly', 'weekly', 'biweekly']
     }
 }
 </script>

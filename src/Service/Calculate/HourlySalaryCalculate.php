@@ -156,7 +156,7 @@ class HourlySalaryCalculate extends AbstractCalculate implements PaymentCalculat
         $startDate = $payDate->modify('First day of this week');
         $endDate = $payDate;
 
-        return $this->contributionRepository->getByPeriod($startDate, $endDate);
+        return $this->contributionRepository->getByPeriod($this->employee, $startDate, $endDate);
     }
 
     protected function getServicesCharges(): array

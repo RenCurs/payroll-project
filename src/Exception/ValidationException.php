@@ -7,6 +7,7 @@ use Throwable;
 
 class ValidationException extends Exception
 {
+    private const DEFAULT_MESSAGE  = "An expected error during validation, check errors";
     /**
      * @var string[]
      */
@@ -17,7 +18,7 @@ class ValidationException extends Exception
      */
     public function __construct(array $errors, string $message = "", int $code = 0, ?Throwable $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message ?: self::DEFAULT_MESSAGE, $code, $previous);
 
         $this->errors = $errors;
     }

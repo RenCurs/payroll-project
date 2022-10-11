@@ -6,7 +6,9 @@ import Employee from '@/types/Employee'
 export enum Actions {
     getEmployees = 'getEmployees',
     getEmployeeById = 'getEmployeeById',
-    updateEmployee = 'updateEmployee'
+    updateEmployee = 'updateEmployee',
+    deleteEmployee = 'deleteEmployee',
+    createEmployee = 'createEmployee'
 }
 
 const employeeService = new EmployeeService()
@@ -20,5 +22,11 @@ export const actions: ActionTree<State, State> = {
     },
     async [Actions.updateEmployee] (context: ActionContext<State, State>, employee: Employee): Promise<Employee> {
         return await employeeService.updateEmployee(employee)
+    },
+    async [Actions.deleteEmployee] (context: ActionContext<State, State>, employeeId: number): Promise<void> {
+        return await employeeService.deleteEmployee(employeeId)
+    },
+    async [Actions.createEmployee] (context: ActionContext<State, State>, employee: Employee): Promise<Employee> {
+        return await employeeService.createEmployee(employee)
     }
 }

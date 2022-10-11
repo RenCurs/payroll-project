@@ -26,7 +26,7 @@ final class Version20220206120229 extends AbstractMigration
             CREATE TABLE employee (
                 id INT NOT NULL,
                 fio VARCHAR(255) NOT NULL,
-                address VARCHAR(255) NOT NULL,
+                address VARCHAR(255) DEFAULT NULL,
                 date_birth TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
                 salary_type VARCHAR(50) NOT NULL,
                 payment_schedule VARCHAR(50) NOT NULL,

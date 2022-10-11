@@ -2,8 +2,11 @@
     <div>
         <HeaderLayout>
             <template #content>
-                <div v-if="error.trim().length > 0" class="alert alert-danger alert-box" role="alert">
-                    {{ error }}
+                <div class="alert-box" v-if="errors.length > 0">
+                    <div v-for="(error, idx) of errors" :key="idx" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 </div>
 
                 <h4 style="text-align: center">{{ $t('employee.edit') }}</h4>
@@ -35,7 +38,7 @@ export default class EditEmployee extends Vue {
     @Prop({ type: String, required: true })
     private employeeId
 
-    private error = ''
+    private errors: Array<string> = []
     private employee: Employee = getEmptyEmployee()
 
     @Mutation(Mutations.setLoading)
@@ -60,15 +63,22 @@ export default class EditEmployee extends Vue {
     }
 
     async updateEmployeeHandle(employee: Employee): Promise<void> {
+        this.errors = []
         this.setLoading(true)
 
         try {
             await this.updateEmployee(employee)
         } catch (err) {
-            this.error = (err as AxiosError).message ?? 'An expected error occurred'
+            this.errors = (err as AxiosError<{ errors: Array<string> }>)?.response?.data.errors ??
+                [this.$t('error.editEmployee').toString()]
+            this.clearError()
         } finally {
             this.setLoading(false)
         }
+    }
+
+    private clearError(): void {
+        setTimeout(() => { this.errors = [] }, 4000)
     }
 }
 

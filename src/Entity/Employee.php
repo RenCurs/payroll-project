@@ -32,10 +32,9 @@ class Employee
     #[Assert\NotBlank]
     private string $fio;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['account'])]
-    #[Assert\NotBlank]
-    private string $address;
+    private ?string $address = null;
 
     #[ORM\Column(type: 'datetime')]
     #[Groups(['account'])]
@@ -128,12 +127,12 @@ class Employee
         return $this;
     }
 
-    public function getAddress(): string
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    public function setAddress(string $address): self
+    public function setAddress(?string $address): self
     {
         $this->address = $address;
 
@@ -181,7 +180,7 @@ class Employee
         return $this->salary;
     }
 
-    public function setSalary(float $salary): self
+    public function setSalary(?float $salary): self
     {
         $this->salary = $salary;
 
@@ -193,7 +192,7 @@ class Employee
         return $this->hourTariff;
     }
 
-    public function setHourTariff(float $hourTariff): self
+    public function setHourTariff(?float $hourTariff): self
     {
         $this->hourTariff = $hourTariff;
 
@@ -205,7 +204,7 @@ class Employee
         return $this->commissionRate;
     }
 
-    public function setCommissionRate(float $commissionRate): self
+    public function setCommissionRate(?float $commissionRate): self
     {
         $this->commissionRate = $commissionRate;
 

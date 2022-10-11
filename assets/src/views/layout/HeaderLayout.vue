@@ -15,7 +15,7 @@
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <div style="margin-right: 20px ;padding-bottom: 0.5em; padding-top: 0.5em;">
-                                    <span class="text-success text-bold">{{ $t('currentUser') }} Test</span>
+                                    <span class="user text-success text-bold">{{ $t('currentUser') }} Test</span>
                                 </div>
                             </li>
                             <li class="nav-item">
@@ -63,5 +63,7 @@ export default class HeaderLayout extends Vue {
 </script>
 
 <style scoped>
-
+.user:hover {
+    color: aliceblue !important;
+}
 </style>

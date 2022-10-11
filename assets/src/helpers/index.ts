@@ -90,7 +90,7 @@ function baseValidate(employee: Employee): Array<string> {
 
 function clearedEmptyFieldsEmployees(employee: Employee): Employee {
     const objProps = Object.entries(employee).filter(
-        (propsData: [string, unknown]) => propsData[1] !== null && propsData[1] !== undefined
+        (propsData: [string, unknown]) => propsData[1] !== null && propsData[1] !== undefined && propsData[1] !== ''
     )
 
     return <Employee>Object.fromEntries(objProps)

@@ -24,7 +24,7 @@ class EmployeeService
         return $this->entityManager->getRepository(Employee::class)->findAll();
     }
 
-    public function findById(int $id): Employee
+    public function findById(int $id): ?Employee
     {
         return $this->entityManager->getRepository(Employee::class)->find($id);
     }
@@ -43,11 +43,15 @@ class EmployeeService
         if (null !== $id) {
             $existEmployee = $this->findById($id);
             $existEmployee
+                ?->setFio($employee->getFio())
                 ->setAddress($employee->getAddress())
-                ->setFio($employee->getFio())
                 ->setDateBirth($employee->getDateBirth())
                 ->setSalaryType($employee->getSalaryType())
-                ->setPaymentSchedule($employee->getPaymentSchedule());
+                ->setPaymentSchedule($employee->getPaymentSchedule())
+                ->setSalary($employee->getSalary())
+                ->setHourTariff($employee->getHourTariff())
+                ->setCommissionRate($employee->getCommissionRate())
+                ->setIsUnionAffiliation($employee->getIsUnionAffiliation());
         } else {
             $existEmployee = $employee;
             $this->entityManager->persist($existEmployee);
@@ -56,5 +60,17 @@ class EmployeeService
         $this->entityManager->flush();
 
         return $existEmployee;
+    }
+
+    public function delete(int $employeeId): void
+    {
+        $employee = $this->findById($employeeId);
+
+        if (null === $employee) {
+            return;
+        }
+
+        $this->entityManager->remove($employee);
+        $this->entityManager->flush();
     }
 }
