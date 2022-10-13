@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * TODO Поправить типы для св-в и методов
+ * TODO Добавить нужные группы для сериализации
  */
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 #[SalaryConstraint]
@@ -24,71 +25,75 @@ class Employee
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     #[Assert\NotBlank]
     private string $fio;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private ?string $address = null;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     #[Assert\NotBlank]
     #[Assert\Type(DateTimeInterface::class)]
     private DateTimeInterface $dateBirth;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     #[Assert\NotBlank]
     private string $salaryType;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     #[Assert\NotBlank]
     private string $paymentSchedule;
 
     #[ORM\Column(type: 'float', nullable: true)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private ?float $salary = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private ?float $hourTariff = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private ?float $commissionRate = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private bool $isUnionAffiliation = false;
 
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: UnionContribution::class, cascade: ['persist', 'remove'])]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private Collection $unionContribution;
 
     #[ORM\OneToOne(mappedBy: 'employee', targetEntity: PayCheck::class, cascade: ['persist', 'remove'])]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private ?PayCheck $payCheck = null;
 
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: ServicesCharge::class)]
     private Collection $servicesCharges;
 
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: TimeCard::class, orphanRemoval: true)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private Collection $timeCards;
 
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: SaleReceipt::class, orphanRemoval: true)]
-    #[Groups(['account'])]
+    #[Groups(['account', 'auth'])]
     private Collection $saleReceipts;
 
     #[ORM\Column(type: 'date', nullable: true)]
     private ?DateTimeInterface $lastPayDate = null;
+
+    #[ORM\OneToOne(inversedBy: 'employee' ,cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private Client $client;
 
     public function __construct()
     {
@@ -345,6 +350,17 @@ class Employee
     {
         $this->lastPayDate = $lastPayDate;
 
+        return $this;
+    }
+
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(Client $client): Employee
+    {
+        $this->client = $client;
         return $this;
     }
 }

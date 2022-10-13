@@ -25,7 +25,7 @@
 <script lang="ts">
 import { Vue } from 'vue-property-decorator'
 import Component from 'vue-class-component'
-import Employees from '@/views/accountant/main/Employees.vue'
+import Employees from '@/views/accountant/Employees.vue'
 import Employee from '@/types/Employee'
 import HeaderLayout from '@/views/layout/HeaderLayout.vue'
 import { Actions } from '@/store/actions'

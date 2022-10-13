@@ -113,7 +113,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import Employee from '@/types/Employee'
-import EditEmployee from '@/components/accountant/edit/EditEmployee.vue'
+import EditEmployee from '@/components/accountant/EditEmployee.vue'
 import EmployeeView from '@/views/accountant/EmployeeView.vue'
 
 @Component({

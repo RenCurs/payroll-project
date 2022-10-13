@@ -4,9 +4,10 @@ namespace App\DataFixtures;
 
 use App\Entity\SaleReceipt;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class SaleReceiptFixture extends Fixture
+class SaleReceiptFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -26,5 +27,10 @@ class SaleReceiptFixture extends Fixture
          $manager->persist($receipt);
          $manager->persist($receipt2);
          $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [EmployeeFixture::class];
     }
 }

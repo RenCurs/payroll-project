@@ -2,16 +2,20 @@ import { ActionContext, ActionTree } from 'vuex'
 import { State } from '@/store/index'
 import EmployeeService from '@/api/services/EmployeeService'
 import Employee from '@/types/Employee'
+import Client from '@/types/Client'
+import AuthService from '@/api/services/AuthService'
 
 export enum Actions {
     getEmployees = 'getEmployees',
     getEmployeeById = 'getEmployeeById',
     updateEmployee = 'updateEmployee',
     deleteEmployee = 'deleteEmployee',
-    createEmployee = 'createEmployee'
+    createEmployee = 'createEmployee',
+    login = 'login'
 }
 
 const employeeService = new EmployeeService()
+const authService = new AuthService()
 
 export const actions: ActionTree<State, State> = {
     async [Actions.getEmployeeById] (context: ActionContext<State, State>, id: number): Promise<Employee> {
@@ -28,5 +32,8 @@ export const actions: ActionTree<State, State> = {
     },
     async [Actions.createEmployee] (context: ActionContext<State, State>, employee: Employee): Promise<Employee> {
         return await employeeService.createEmployee(employee)
+    },
+    async [Actions.login] (context: ActionContext<State, State>, client: Client): Promise<void> {
+        return await authService.login(client)
     }
 }

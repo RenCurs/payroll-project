@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 import employeeRoutes from '@/components/accountant/routing'
+import { loginRoute, registerRoute } from '@/components/authentication/routing'
 
 Vue.use(VueRouter);
 
@@ -13,7 +14,7 @@ const notFoundRoute: RouteConfig = {
 
 const router = new VueRouter({
     mode: 'history',
-    routes: routes.concat(employeeRoutes, notFoundRoute)
+    routes: routes.concat(employeeRoutes, loginRoute, registerRoute, notFoundRoute)
 });
 
 export default router;

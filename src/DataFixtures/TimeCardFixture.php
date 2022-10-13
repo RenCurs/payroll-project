@@ -5,9 +5,10 @@ namespace App\DataFixtures;
 use App\Entity\TimeCard;
 use App\Enum\TimeTypeEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class TimeCardFixture extends Fixture
+class TimeCardFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -33,5 +34,10 @@ class TimeCardFixture extends Fixture
         $manager->persist($card3);
 
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [EmployeeFixture::class];
     }
 }

@@ -13,13 +13,11 @@ class PaymentScheduleFactory
 {
     public function create(Employee $employee): PaymentSchedule
     {
-        $schedule = match ($employee->getPaymentSchedule()) {
+        return match ($employee->getPaymentSchedule()) {
             PaymentScheduleEnum::MONTHLY => new MonthlyPaymentSchedule(),
             PaymentScheduleEnum::WEEKLY => new WeeklyPaymentSchedule(),
             PaymentScheduleEnum::BIWEEKLY => new BiweeklyPaymentSchedule(),
             default => throw new InvalidArgumentException('Неизвестный график оплаты'),
         };
-
-        return $schedule;
     }
 }

@@ -9,4 +9,4 @@ fos_js_routing:
     # такого ключа нет.
 
     # Регулярка имени роутов, регулярка по самому роуту почему-то не работает
-    routes_to_expose:  [ 'api_(\S+)' ]
+    routes_to_expose:  [ 'api_(\S+)', 'app_login' ]

@@ -1,18 +1,10 @@
 import Employee from '@/types/Employee'
-import { AxiosApiClient } from '../client/AxiosApiClient'
-import routes from '../../../fos_js_routes.json'
-import { Router, RoutingData } from 'symfony-ts-router'
+import BaseService from '@/api/services/BaseService'
 
-const apiClient = new AxiosApiClient()
-const router = new Router()
-router.setRoutingData(routes as unknown as RoutingData)
-
-export default class EmployeeService {
-    protected apiClient = apiClient
-
+export default class EmployeeService extends BaseService {
     public async getEmployeeById(id: number): Promise<Employee> {
         const response = await this.apiClient.get<Employee>(
-            router.generate('api_get_employee', { id })
+            this.router.generate('api_get_employee', { id })
         )
 
         return response.data
@@ -20,7 +12,7 @@ export default class EmployeeService {
 
     public async getEmployees(): Promise<Array<Employee>> {
         const response = await this.apiClient.get<Array<Employee>>(
-            router.generate('api_get_employee')
+            this.router.generate('api_get_employee')
         )
 
         return response.data
@@ -28,7 +20,7 @@ export default class EmployeeService {
 
     public async updateEmployee(employee: Employee): Promise<Employee> {
         const response = await this.apiClient.patch<Employee, Employee>(
-            router.generate('api_update_employee', { employeeId: employee.id }),
+            this.router.generate('api_update_employee', { employeeId: employee.id }),
             employee
         )
 
@@ -37,13 +29,13 @@ export default class EmployeeService {
 
     public async deleteEmployee(employeeId: number): Promise<void> {
         await this.apiClient.delete<unknown>(
-            router.generate('api_delete_employee', { employeeId })
+            this.router.generate('api_delete_employee', { employeeId })
         )
     }
 
     public async createEmployee(employee: Employee): Promise<Employee> {
         const response = await this.apiClient.post<Employee, Employee>(
-            router.generate('api_create_employee'),
+            this.router.generate('api_create_employee'),
             employee
         )
 

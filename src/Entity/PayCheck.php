@@ -26,7 +26,7 @@ class PayCheck
     #[ORM\Column(type: 'float')]
     private float $totalSum;
 
-    #[ORM\OneToOne(targetEntity: Employee::class, inversedBy: 'payCheck', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'payCheck', targetEntity: Employee::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private Employee $employee;
 

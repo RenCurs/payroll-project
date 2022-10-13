@@ -5,9 +5,10 @@ namespace App\DataFixtures;
 use App\Entity\ServicesCharge;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ServicesChargeFixture extends Fixture
+class ServicesChargeFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -37,5 +38,10 @@ class ServicesChargeFixture extends Fixture
         $manager->persist($charge3);
 
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [EmployeeFixture::class];
     }
 }

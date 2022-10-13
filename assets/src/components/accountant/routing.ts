@@ -4,18 +4,18 @@ const employeeRoutes: Array<RouteConfig> = [
     {
         path: '/employees/',
         name: 'employee_list',
-        component: () => import('@/components/accountant/main/Main.vue')
+        component: () => import('@/components/accountant/Main.vue')
     },
     {
         props: true,
         path: '/employees/edit/:employeeId',
         name: 'edit_employee',
-        component: () => import('@/components/accountant/edit/EditEmployee.vue')
+        component: () => import('@/components/accountant/EditEmployee.vue')
     },
     {
         path: '/employees/create',
         name: 'create_employee',
-        component: () => import('@/components/accountant/create/CreateEmployee.vue')
+        component: () => import('@/components/accountant/CreateEmployee.vue')
     }
 ]
 

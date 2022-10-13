@@ -18,15 +18,18 @@ use InvalidArgumentException;
 
 class PaymentCalculateFactory
 {
-    public function __construct(private readonly TimeCardRepository $timeCardRepository, private readonly SaleReceiptRepository $receiptRepository, private readonly ServicesChargeRepository $chargeRepository, private readonly UnionContributionRepository $contributionRepository)
-    {
-    }
+    public function __construct(
+        private readonly TimeCardRepository $timeCardRepository,
+        private readonly SaleReceiptRepository $receiptRepository,
+        private readonly ServicesChargeRepository $chargeRepository,
+        private readonly UnionContributionRepository $contributionRepository
+    ) {}
 
     public function create(DateTime $dateTime, Employee $employee): PaymentCalculate
     {
         $payDate = clone $dateTime;
 
-        $calculate = match ($employee->getSalaryType()) {
+        return match ($employee->getSalaryType()) {
             PaymentTypeEnum::FIXED => new FixedSalaryCalculate(
                 $payDate,
                 $employee,
@@ -49,7 +52,5 @@ class PaymentCalculateFactory
             ),
             default => throw new InvalidArgumentException('Неизвестный тип оплаты для работника'),
         };
-
-        return $calculate;
     }
 }
